@@ -1,0 +1,362 @@
+import { useState, useEffect } from 'react';
+import backDrop from "../assets/john-wick-backdrop.png";
+
+// Add more backdrop images here
+const heroSlides = [
+  {
+    id: 1,
+    image: backDrop,
+    title: "John Wick",
+    description: "An ex-hitman comes out of retirement to track down the gangsters that took everything from him.",
+    rating: 4
+  },
+  {
+    id: 2,
+    image: backDrop, // Replace with different image
+    title: "The Witcher",
+    description: "Geralt of Rivia, a mutated monster-hunter for hire, journeys toward his destiny in a turbulent world where people often prove more wicked than beasts.",
+    rating: 5
+  },
+  {
+    id: 3,
+    image: backDrop, // Replace with different image
+    title: "Breaking Bad",
+    description: "A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine.",
+    rating: 5
+  }
+];
+
+function StarRating({ rating = 4, maxStars = 5 }) {
+  return (
+    <div className="flex items-center gap-1 mb-4">
+      <div className="flex">
+        {[...Array(maxStars)].map((_, index) => (
+          <svg
+            key={index}
+            className={`w-4 h-4 sm:w-5 sm:h-5 ${
+              index < rating ? "text-yellow-400" : "text-gray-400"
+            }`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        ))}
+      </div>
+      <p className="text-primary-2">
+        {rating}/{maxStars}
+      </p>
+    </div>
+  );
+}
+
+function ActionButtons() {
+  return (
+    <div className="flex flex-col sm:flex-row gap-3">
+      <button className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium transition-colors">
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M8 5v10l7-5-7-5z" />
+        </svg>
+        Watch Movie
+      </button>
+      <button className="flex items-center justify-center gap-2 bg-transparent border border-white/30 hover:bg-white/10 text-white px-6 py-3 rounded-full font-medium transition-colors">
+        More Info
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+function HeroContent({ slide }) {
+  return (
+    <div className="absolute bottom-8 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-md md:left-8 md:max-w-lg lg:max-w-xl xl:max-w-2xl z-20">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 leading-tight">
+        {slide.title}
+      </h1>
+      <p className="text-sm sm:text-base md:text-lg text-white/90 leading-relaxed mb-4 line-clamp-3 sm:line-clamp-none">
+        {slide.description}
+      </p>
+      <StarRating rating={slide.rating} />
+      <ActionButtons />
+    </div>
+  );
+}
+
+function CarouselDots({ total, current, onDotClick }) {
+  return (
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
+      {[...Array(total)].map((_, index) => (
+        <button
+          key={index}
+          onClick={() => onDotClick(index)}
+          className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+            index === current ? 'bg-white' : 'bg-white/40 hover:bg-white/60'
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
+function CarouselArrows({ onPrev, onNext }) {
+  return (
+    <>
+      <button
+        onClick={onPrev}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/30 hover:bg-black/50 text-white p-2 sm:p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+      >
+        <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button
+        onClick={onNext}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/30 hover:bg-black/50 text-white p-2 sm:p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+      >
+        <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </>
+  );
+}
+
+export default function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Auto-advance slides
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+    setIsAutoPlaying(false);
+    // Resume auto-play after 10 seconds
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  const goToPrev = () => {
+    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  const goToNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  return (
+    <section className="relative w-full h-[40vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden group">
+      {/* Image Container */}
+      <div className="relative w-[80vw] h-full ml-auto">
+        {heroSlides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ${
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img
+              className="w-full h-full  object-cover"
+              src={slide.image}
+              alt={slide.title}
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Gradient overlay for better text readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent md:bg-gradient-to-r md:from-black/60 md:via-black/30 md:to-transparent z-10" />
+
+      {/* Content */}
+      <HeroContent slide={heroSlides[currentSlide]} />
+
+      {/* Navigation */}
+      <CarouselArrows onPrev={goToPrev} onNext={goToNext} />
+      <CarouselDots 
+        total={heroSlides.length} 
+        current={currentSlide} 
+        onDotClick={goToSlide} 
+      />
+    </section>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+new code
+
+import backDrop from "../assets/john-wick-backdrop.png";
+import arrowSvg from "../assets/arrowDown.svg";
+import StarRating from "./StarRating";
+
+export default function HeroCarousel() {
+  return (
+    <div className="hero-carousel-container">
+      <div className="hero-shadow-overlay" />
+      <img src={backDrop} alt="backdrop" />
+      <div className="carousel-content-container">
+        <div className="carousel-main-content">
+          <h1>John Wick</h1>
+          <p>Lorem ipsum bla bla bla kkdjksjd ksjdksj dksjdks jdksk djsk djks jdkd sdjks djksd</p>
+          <StarRating rating={3} />
+          <button>
+            More Info
+            <span>
+              <img src={arrowSvg} alt="arrow svg" />
+            </span>
+          </button>
+        </div>
+        <div className="carousel-preview-container">
+            <img className="" src={backDrop} alt="" />
+            <img className="active" src={backDrop} alt="" />
+            <img src={backDrop} alt="" />
+            <img src={backDrop} alt="" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+almost finished code ********************
+
+import { useState } from "react";
+import arrowSvg from "../assets/arrowDown.svg";
+import StarRating from "./StarRating";
+
+export default function HeroCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const heroData = [
+    {
+      id: 1,
+      title: "John Wick Chapter 4",
+      description:
+        "With the price on his head ever increasing, John Wick uncovers a path to defeating The High Table. But before he can earn his freedom, Wick must face off against a new enemy.",
+      backdrop: "https://image.tmdb.org/t/p/original/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",
+      poster: "https://image.tmdb.org/t/p/original/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",
+      rating: 4,
+    },
+    {
+      id: 2,
+      title: "Spider-Man: No Way Home",
+      description:
+        "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear.",
+      backdrop: "https://image.tmdb.org/t/p/original/iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg",
+      poster: "https://image.tmdb.org/t/p/original/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+      rating: 5,
+    },
+    {
+      id: 3,
+      title: "The Batman",
+      description:
+        "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption.",
+      backdrop: "https://image.tmdb.org/t/p/original/b0PlSFdDwbyK0cf5RxwDpaOJQvQ.jpg",
+      poster: "https://image.tmdb.org/t/p/original/74xTEgt7R36Fpooo50r9T25onhq.jpg",
+      rating: 4,
+    },
+    {
+      id: 4,
+      title: "Top Gun: Maverick",
+      description:
+        "After thirty years, Maverick is still pushing the envelope as a top naval aviator, but must confront ghosts of his past when he leads TOP GUN's elite graduates.",
+      backdrop: "https://image.tmdb.org/t/p/original/AaV1YIdWKnjAIAOe8UUKBFm327v.jpg",
+      poster: "https://image.tmdb.org/t/p/original/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",
+      rating: 5,
+    },
+  ];
+
+  const handleImageClick = (index) => {
+    setActiveIndex(index);
+  };
+
+  const handlePrevious = () => {
+    setActiveIndex((prev) => (prev === 0 ? heroData.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev === heroData.length - 1 ? 0 : prev + 1));
+  };
+
+  const currentHero = heroData[activeIndex];
+
+  return (
+    <div className="hero-carousel-container">
+       <img src={currentHero.backdrop} alt="backdrop" /> 
+      <div className="hero-shadow-overlay" />
+      
+      <div className="carousel-content-container">
+        <div className="carousel-main-content">
+          <h1>{currentHero.title}</h1>
+          <p>{currentHero.description}</p>
+          <StarRating rating={currentHero.rating} />
+          <button>
+            More Info
+            <span>
+              <img src={arrowSvg} alt="arrow svg" />
+            </span>
+          </button>
+        </div>
+        
+        {/* Desktop carousel preview */}
+        <div className="carousel-preview-container desktop-only">
+          {heroData.map((item, index) => (
+            <img
+              key={item.id}
+              className={index === activeIndex ? "active" : ""}
+              src={item.poster}
+              alt={`Preview ${index + 1}`}
+              onClick={() => handleImageClick(index)}
+            />
+          ))}
+        </div>
+        
+        {/* Mobile navigation buttons */}
+        <div className="carousel-nav-buttons mobile-only">
+          <div className="carousel-indicators">
+            {heroData.map((_, index) => (
+              <span
+                key={index}
+                className={`indicator ${index === activeIndex ? 'active' : ''}`}
+                onClick={() => handleImageClick(index)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
