@@ -83,9 +83,9 @@ export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
 
   return (
     <div
-      className="relative flex-shrink-0 h-full rounded-xl overflow-hidden mr-[1%]"
+      className="relative flex-shrink-0 h-full rounded-md overflow-hidden mr-[1%] "
       style={{
-        flex: "0 0 98%",
+        flex: "0 0 95%",
         backgroundImage: `url(${backDropUrl})`,
         backgroundPosition: "center top 30%",
         backgroundSize: "cover",
@@ -119,7 +119,7 @@ export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
           <div className="mb-4">
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-primary-2 shadow-lg">
               <span className="w-2 h-2 bg-white rounded-full mr-2 "></span>
-              IN THEATRES NOW
+              NEW RELEASE
             </span>
           </div>
 
@@ -157,7 +157,7 @@ export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
           <div className="mb-3">
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold text-primary-2 shadow-lg">
               <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5"></span>
-              IN THEATRES NOW
+              NEW RELEASE
             </span>
           </div>
 
