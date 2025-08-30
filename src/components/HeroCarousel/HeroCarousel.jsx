@@ -2,19 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
-import HeroSlide from "./HeroCarousel/HeroSlide";
-import NavigationButton from "./HeroCarousel/NavigationButton";
-import DotsIndicator from "./HeroCarousel/DotsIndicator";
+import HeroSlide from "./HeroSlide";
+import NavigationButton from "../NavigationButton";
+import DotsIndicator from "./DotsIndicator";
 
 export default function HeroCarousel() {
   const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
   // Get current date and 3 months ago for theatrical window
-  const today = new Date().toISOString().split('T')[0];
-  const threeMonthsAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  
+  const today = new Date().toISOString().split("T")[0];
+  const threeMonthsAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
+
   const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&primary_release_date.gte=${threeMonthsAgo}&primary_release_date.lte=${today}&sort_by=popularity.desc&with_release_type=3&api_key=${TMDB_API_KEY}`;
-  
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -31,8 +32,7 @@ export default function HeroCarousel() {
         }
 
         const data = await response.json();
-        setHeroData(data.results.slice(0, 2));
-        console.log(data);
+        setHeroData(data.results.slice(0, 4));
       } catch (err) {
         setError(err.message);
         console.log(err);
@@ -43,8 +43,6 @@ export default function HeroCarousel() {
 
     fetchData();
   }, []);
-
-  console.log(heroData);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
     Autoplay({ delay: 5000, stopOnInteraction: false }),
