@@ -1,36 +1,49 @@
 import HeroCarousel from "./components/HeroCarousel/HeroCarousel";
 import CardSection from "./components/CardSections/CardSection";
-import { useEffect, useState } from "react";
+import { useHomePageData } from "./hooks/useHomePageData";
 
 export default function App() {
-  const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-  const [trendingData, setTrendingData] = useState([]);
+  const { data, loading, error } = useHomePageData();
 
-  useEffect(() => {
-    const fetchTrendingData = async () => {
-      try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}`
-        );
+  if (loading) {
+    return (
+      <main>
+        <div className="relative w-full h-[50vh] min-h-[500px] mt-5 overflow-hidden">
+          <div className="flex items-center justify-center h-full">
+            <div className="text-white text-xl">Loading...</div>
+          </div>
+        </div>
+        <div className="w-full flex flex-col items-center">
+          <div className="w-full pt-5 px-7">
+            <div className="h-8 bg-gray-800 rounded mb-4 animate-pulse"></div>
+            <div className="flex gap-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="w-36 h-50 bg-gray-800 rounded animate-pulse flex-shrink-0"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        const moviesAndTV = data.results.filter(item => item.media_type !== 'person');
-        setTrendingData(moviesAndTV);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchTrendingData();
-  }, []);
+  if (error) {
+    return (
+      <main>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-red-500 text-xl">Error: {error}</div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main>
       <HeroCarousel />
-      <div className="w-full flex flex-col items-center ">
-        <CardSection sectionTitle="Trending this week" data={trendingData} />
+      <div className="w-full flex flex-col items-center">
+        <CardSection sectionTitle="Trending this week" data={data.trending} />
+        <CardSection sectionTitle="Top Rated Movies" data={data.topRated} />
+        <CardSection sectionTitle="Trending People" data={data.trendingPeople} />
       </div>
     </main>
   );

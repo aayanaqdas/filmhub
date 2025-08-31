@@ -23,6 +23,11 @@ export default function CardSection({ sectionTitle, data }) {
     }
   };
 
+  // Don't render if no data
+  if (!data || data.length === 0) {
+    return null;
+  }
+
   const cards = data.map((media) => {
     return (
       <Cards

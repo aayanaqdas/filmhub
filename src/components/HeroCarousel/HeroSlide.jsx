@@ -1,85 +1,16 @@
-import { useState, useEffect } from "react";
 import { movieGenres } from "../../genres";
 
-export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
-  const [logoPath, setLogoPath] = useState(null);
-  const [ageRating, setAgeRating] = useState("NR"); //Not Rated (NR)
-
-  const logoUrl = `https://api.themoviedb.org/3/movie/${item.id}/images?api_key=${TMDB_API_KEY}`;
-  const releaseDatesUrl = `https://api.themoviedb.org/3/movie/${item.id}/release_dates?api_key=${TMDB_API_KEY}`;
-
+export default function HeroSlide({ item, isActive }) {
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = baseImgUrl + item.backdrop_path;
 
-  const releaseYear = item.release_date.slice(0, 4) || "N/A";
+  const releaseYear = item.release_date ? item.release_date.slice(0, 4) : "N/A";
   const genreNames = item.genre_ids
     .map((genreId) => {
       const genre = movieGenres.find((genre) => genre.id === genreId);
       return genre ? genre.name : "N/A";
     })
     .join(", ");
-
-  useEffect(() => {
-    const fetchLogos = async () => {
-      try {
-        const response = await fetch(logoUrl);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch logos");
-        }
-        const data = await response.json();
-
-        const englishLogos = data.logos.filter((logo) => logo.iso_639_1 === "en");
-
-        if (englishLogos.length > 0) {
-          setLogoPath(englishLogos[0].file_path);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchLogos();
-  }, [logoUrl]);
-
-  useEffect(() => {
-    const fetchAgeRating = async () => {
-      try {
-        const response = await fetch(releaseDatesUrl);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch release dates");
-        }
-
-        const data = await response.json();
-
-        // Look for US certification first
-        const usRelease = data.results.find((result) => result.iso_3166_1 === "US");
-        if (usRelease && usRelease.release_dates.length > 0) {
-          const certification = usRelease.release_dates[0].certification;
-          if (certification) {
-            setAgeRating(certification);
-            return;
-          }
-        }
-
-        // Fallback to any other country with certification
-        for (const result of data.results) {
-          if (result.release_dates.length > 0) {
-            const certification = result.release_dates[0].certification;
-            if (certification) {
-              setAgeRating(certification);
-              return;
-            }
-          }
-        }
-      } catch (err) {
-        console.log("Failed to fetch age rating:", err);
-      }
-    };
-
-    fetchAgeRating();
-  }, [releaseDatesUrl]);
 
   return (
     <div
@@ -123,9 +54,9 @@ export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
             </span>
           </div>
 
-          {logoPath ? (
+          {item.logoPath ? (
             <img
-              src={`${baseImgUrl}${logoPath}`}
+              src={`${baseImgUrl}${item.logoPath}`}
               alt={item.title}
               className="h-16 md:h-20 lg:h-24 xl:h-32 mb-6 object-contain"
             />
@@ -137,7 +68,7 @@ export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
 
           <div className="flex items-center space-x-4 mb-4">
             <span className="bg-gray-800/80 px-3 py-1 rounded-xl text-sm font-medium">
-              {ageRating}
+              {item.certification}
             </span>
             <span className="text-gray-300 text-sm">
               {releaseYear} • {genreNames}
@@ -161,9 +92,9 @@ export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
             </span>
           </div>
 
-          {logoPath ? (
+          {item.logoPath ? (
             <img
-              src={`${baseImgUrl}${logoPath}`}
+              src={`${baseImgUrl}${item.logoPath}`}
               alt={item.title}
               className="h-20 object-contain mx-auto mb-4"
             />
@@ -173,7 +104,7 @@ export default function HeroSlide({ item, isActive, TMDB_API_KEY }) {
 
           <div className="flex items-center justify-center space-x-2 mb-3 text-xs">
             <span className="bg-gray-800/80 px-2 py-1 rounded text-xs font-medium">
-              {ageRating}
+              {item.certification}
             </span>
             <span className="text-white">{releaseYear}</span>
             <span className="text-white">•</span>
