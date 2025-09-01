@@ -71,11 +71,7 @@ export default function HeroCarousel() {
         <div className="overflow-visible h-full" ref={emblaRef}>
           <div className="flex h-full">
             {carouselItems.map((item, index) => (
-              <HeroSlide
-                key={item.id}
-                item={item}
-                isActive={index === selectedIndex}
-              />
+              <HeroSlide key={item.id} item={item} isActive={index === selectedIndex} />
             ))}
           </div>
         </div>

@@ -8,7 +8,7 @@ const threeMonthsAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOStri
 const apiCall = async (endpoint) => {
   try {
     // Check if endpoint already has query parameters
-    const separator = endpoint.includes('?') ? '&' : '?';
+    const separator = endpoint.includes("?") ? "&" : "?";
     const response = await fetch(`${BASE_URL}${endpoint}${separator}api_key=${TMDB_API_KEY}`);
     if (!response.ok) throw new Error("Failed to fetch data");
     return await response.json();
@@ -24,23 +24,24 @@ export const tmdbApi = {
   getTopRated: () => apiCall("/movie/top_rated"),
   getTrendingPeople: () => apiCall("/trending/person/week"),
 
-  // Carousel specific - fixed endpoint
+  // Carousel specific
   getNewReleases: () =>
     apiCall(
       `/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&primary_release_date.gte=${threeMonthsAgo}&primary_release_date.lte=${today}&sort_by=popularity.desc&with_release_type=3`
     ),
-  
+
   // Movie/TV details and certifications
-  getMovieImages: (id) => apiCall(`/movie/${id}/images`),
+  getMediaImages: (mediaType, id) => apiCall(`/${mediaType}/${id}/images`),
   getMovieCertification: (id) => apiCall(`/movie/${id}/release_dates`),
   getTVCertification: (id) => apiCall(`/tv/${id}/content_ratings`),
-  getMovieDetails: (id) => apiCall(`/movie/${id}`),
-  getTVDetails: (id) => apiCall(`/tv/${id}`),
-  
+  getMediaDetails: (mediaType, id) => apiCall(`/${mediaType}/${id}`),
+
+  getWatchProviders: (mediaType, id) => apiCall(`/${mediaType}/${id}/watch/providers`),
+
   // Search
   searchMulti: (query) => apiCall(`/search/multi&query=${encodeURIComponent(query)}`),
-  
+
   // Discover
-  discoverMovies: (params = '') => apiCall(`/discover/movie${params}`),
-  discoverTV: (params = '') => apiCall(`/discover/tv${params}`)
+  discoverMovies: (params = "") => apiCall(`/discover/movie${params}`),
+  discoverTV: (params = "") => apiCall(`/discover/tv${params}`),
 };

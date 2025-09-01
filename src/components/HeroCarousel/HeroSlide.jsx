@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { movieGenres } from "../../genres";
 
 export default function HeroSlide({ item, isActive }) {
+  const navigate = useNavigate();
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = baseImgUrl + item.backdrop_path;
 
@@ -12,9 +14,15 @@ export default function HeroSlide({ item, isActive }) {
     })
     .join(", ");
 
+  const handleSlideClick = () => {
+    const path = `/movie/${item.id}`;
+    navigate(path);
+  };
+
   return (
     <div
-      className="relative flex-shrink-0 h-full rounded-md overflow-hidden mr-[1%] "
+      onClick={handleSlideClick}
+      className="relative flex-shrink-0 h-full rounded-md overflow-hidden mr-[1%] cursor-pointer"
       style={{
         flex: "0 0 95%",
         backgroundImage: `url(${backDropUrl})`,

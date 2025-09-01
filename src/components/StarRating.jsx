@@ -1,10 +1,11 @@
-export default function StarRating({ rating, maxStars = 5 }) {
+export default function StarRating({ voteAverage, maxStars = 5 }) {
+  const rating = Math.round(voteAverage * 10) / 20;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
   const emptyStars = maxStars - fullStars - (hasHalfStar ? 1 : 0);
 
   return (
-    <div className="flex items-center gap-1 mb-4">
+    <div className="flex items-center gap-1">
       <div className="flex">
         {/* Full stars */}
         {[...Array(fullStars)].map((_, index) => (
