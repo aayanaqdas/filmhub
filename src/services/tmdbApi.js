@@ -36,7 +36,12 @@ export const tmdbApi = {
   getMediaImages: (mediaType, id) => apiCall(`/${mediaType}/${id}/images`),
   getMovieCertification: (id) => apiCall(`/movie/${id}/release_dates`),
   getTVCertification: (id) => apiCall(`/tv/${id}/content_ratings`),
-  getMediaDetails: (mediaType, id) => apiCall(`/${mediaType}/${id}`),
+  getMediaDetails: (mediaType, id) =>
+    apiCall(
+      `/${mediaType}/${id}?append_to_response=${
+        mediaType === "person" ? "combined_credits" : "credits"
+      }`
+    ),
 
   getWatchProviders: (mediaType, id) => apiCall(`/${mediaType}/${id}/watch/providers`),
 

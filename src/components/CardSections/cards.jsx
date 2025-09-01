@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import StarRating from "../StarRating";
 
-export default function Cards({ id, title, mediaType, posterPath, voteAverage }) {
+export default function Cards({ id, title, mediaType, posterPath, voteAverage, character }) {
   const navigate = useNavigate();
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const maxLength = 25;
@@ -11,6 +11,29 @@ export default function Cards({ id, title, mediaType, posterPath, voteAverage })
     const path = `/${mediaType}/${id}`;
     navigate(path);
   };
+
+  if (mediaType === "person") {
+    return (
+      <div
+        className="flex flex-col items-center flex-shrink-0 w-32 sm:w-36 md:w-40 lg:w-44 cursor-pointer"
+        onClick={handleCardClick}
+      >
+        <div className="w-31 h-31 sm:w-35 sm:h-35 md:w-39 md:h-39 lg:w-43 lg:h-43 rounded-full overflow-hidden mb-2 shadow-lg">
+          <img src={baseImgUrl + posterPath} alt={title} className="w-full h-full object-cover" />
+        </div>
+        <div className="text-center">
+          <h3 className="text-white text-xs sm:text-sm md:text-base font-semibold leading-tight mb-1">
+            {truncatedTitle}
+          </h3>
+          {character && (
+            <p className="text-primary-2 text-xs sm:text-sm opacity-80">
+              {character.length > 20 ? character.substring(0, 20) + "..." : character}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

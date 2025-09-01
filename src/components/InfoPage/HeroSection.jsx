@@ -1,7 +1,14 @@
 import StarRating from "../StarRating";
 
 export default function HeroSection({ data, mediaType }) {
-  console.log(data);
+  // if any essential data is missing, don't render
+  if (!data || !data.backdrop_path || !data.vote_average) {
+    return (
+      <div className="w-full h-[70vh] bg-gray-800 animate-pulse flex items-center justify-center">
+        <div className="text-gray-400 text-lg">Loading...</div>
+      </div>
+    );
+  }
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = baseImgUrl + data.backdrop_path;
 

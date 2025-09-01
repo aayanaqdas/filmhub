@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/logo-light.svg";
 import homeIcon from "../assets/home-icon.svg";
 import tvIcon from "../assets/tv-icon.svg";
@@ -8,6 +8,7 @@ import searchIcon from "../assets/search-icon.svg";
 
 export default function NavBar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("HOME");
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -30,6 +31,23 @@ export default function NavBar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Update active tab based on current route
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    if (currentPath === "/") {
+      setActiveTab("HOME");
+    } else if (currentPath.startsWith("/movies") || currentPath.startsWith("/movie/")) {
+      setActiveTab("MOVIES");
+    } else if (currentPath.startsWith("/series") || currentPath.startsWith("/tv/")) {
+      setActiveTab("SERIES");
+    } else if (currentPath.startsWith("/search")) {
+      setActiveTab("SEARCH");
+    } else {
+      setActiveTab("");
+    }
+  }, [location.pathname]);
 
   const handleNavClick = (item) => {
     setActiveTab(item.name);

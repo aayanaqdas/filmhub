@@ -28,6 +28,41 @@ export default function CardSection({ sectionTitle, data, mediaType }) {
     return null;
   }
 
+  // Render person cards (for cast members)
+  if (mediaType === "person") {
+    const personCards = data.map((person) => {
+      return (
+        <Cards
+          key={person.id}
+          id={person.id}
+          mediaType={"person"}
+          posterPath={person.profile_path}
+          title={person.name}
+          character={person.character}
+        />
+      );
+    });
+
+    return (
+      <section className="w-full pt-5 relative">
+        <h1 className="text-primary-2 text-2xl md:text-3xl font-bold mb-4 px-7">{sectionTitle}</h1>
+
+        <div className="relative">
+          <NavigationButton direction="prev" onClick={scrollLeft} variant="section" />
+          <NavigationButton direction="next" onClick={scrollRight} variant="section" />
+
+          <div
+            ref={scrollContainerRef}
+            className="w-full flex gap-4 overflow-x-auto overflow-y-hidden pb-2 hide-scrollbar px-7 scroll-smooth"
+          >
+            {personCards}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Render movie/TV cards
   const cards = data.map((media) => {
     return (
       <Cards
