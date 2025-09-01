@@ -21,7 +21,9 @@ const apiCall = async (endpoint) => {
 export const tmdbApi = {
   // Home page data
   getTrending: () => apiCall("/trending/all/week"),
-  getTopRated: () => apiCall("/movie/top_rated"),
+  getPopularMovies: () => apiCall("/movie/popular"),
+  getTopRatedMovies: () => apiCall("/movie/top_rated"),
+  getTopRatedTv: () => apiCall("/tv/top_rated"),
   getTrendingPeople: () => apiCall("/trending/person/week"),
 
   // Carousel specific

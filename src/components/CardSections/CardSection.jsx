@@ -2,7 +2,7 @@ import Cards from "./cards";
 import NavigationButton from "../NavigationButton";
 import { useRef } from "react";
 
-export default function CardSection({ sectionTitle, data }) {
+export default function CardSection({ sectionTitle, data, mediaType }) {
   const scrollContainerRef = useRef(null);
 
   const scrollLeft = () => {
@@ -33,7 +33,7 @@ export default function CardSection({ sectionTitle, data }) {
       <Cards
         key={media.id}
         id={media.id}
-        mediaType={media.media_type}
+        mediaType={mediaType === "all" ? media.media_type : mediaType}
         posterPath={media.poster_path}
         title={media.title ? media.title : media.name}
         voteAverage={media.vote_average}

@@ -18,7 +18,10 @@ export default function HomePage() {
             <div className="h-8 bg-gray-800 rounded mb-4 animate-pulse"></div>
             <div className="flex gap-4">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-36 h-50 bg-gray-800 rounded animate-pulse flex-shrink-0"></div>
+                <div
+                  key={i}
+                  className="w-36 h-50 bg-gray-800 rounded animate-pulse flex-shrink-0"
+                ></div>
               ))}
             </div>
           </div>
@@ -38,10 +41,12 @@ export default function HomePage() {
   }
 
   return (
-    <main>
+    <main className="pt-12">
       <HeroCarousel />
       <div className="w-full flex flex-col items-center">
-        <CardSection sectionTitle="Trending this week" data={data.trending} />
+        <CardSection sectionTitle="Trending this week" data={data.trending} mediaType="all" />
+        <CardSection sectionTitle="Top rated TV-Shows" data={data.topRatedTv} mediaType="tv" />
+        <CardSection sectionTitle="Popular movies" data={data.popularMovies} mediaType="movie" />
       </div>
     </main>
   );
