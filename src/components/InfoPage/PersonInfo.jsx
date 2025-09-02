@@ -51,12 +51,14 @@ export default function PersonInfo({ data, loading, error }) {
       : data?.biography;
 
   // Sort combined_credits.cast by vote count in descending order
-  const sortedCastCredits = data.combined_credits?.cast ? 
-    [...data.combined_credits.cast].sort((a, b) => b.vote_count - a.vote_count) : [];
+  const sortedCastCredits = data.combined_credits?.cast
+    ? [...data.combined_credits.cast].sort((a, b) => b.vote_count - a.vote_count)
+    : [];
 
   // Sort combined_credits.crew by vote count in descending order
-  const sortedCrewCredits = data.combined_credits?.crew ? 
-    [...data.combined_credits.crew].sort((a, b) => b.vote_count - a.vote_count) : [];
+  const sortedCrewCredits = data.combined_credits?.crew
+    ? [...data.combined_credits.crew].sort((a, b) => b.vote_count - a.vote_count)
+    : [];
 
   // Filter out duplicates based on media id for cast
   const filteredCastCredits = [];

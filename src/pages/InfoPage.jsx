@@ -8,8 +8,7 @@ export default function InfoPage() {
   const { mediaType, id } = useParams();
   const { data, loading, error } = useInfoPageData(mediaType, id);
 
-
-  if (!data ) {
+  if (!data) {
     return (
       <div className="w-full h-[70vh] bg-gray-800 animate-pulse flex items-center justify-center">
         <div className="text-gray-400 text-lg">Loading...</div>
@@ -34,7 +33,6 @@ export default function InfoPage() {
       </div>
     );
   }
-
 
   if (mediaType === "person") {
     return <PersonInfo data={data} loading={loading} error={error} />;

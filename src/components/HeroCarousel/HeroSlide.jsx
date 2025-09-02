@@ -22,7 +22,7 @@ export default function HeroSlide({ item, isActive }) {
   return (
     <div
       onClick={handleSlideClick}
-      className="relative flex-shrink-0 h-full rounded-md overflow-hidden mr-[1%] cursor-pointer"
+      className="relative flex-shrink-0 h-full rounded-md overflow-hidden mr-[1%] cursor-pointer hover:shadow-[inset_0_0_0_2px_rgba(255,255,255,1)]"
       style={{
         flex: "0 0 95%",
         backgroundImage: `url(${backDropUrl})`,
@@ -61,7 +61,6 @@ export default function HeroSlide({ item, isActive }) {
               NEW RELEASE
             </span>
           </div>
-
           {item.logoPath ? (
             <img
               src={`${baseImgUrl}${item.logoPath}`}
@@ -110,7 +109,7 @@ export default function HeroSlide({ item, isActive }) {
             <h1 className="text-xl font-bold mb-4">{item.title}</h1>
           )}
 
-          <div className="flex items-center justify-center space-x-2 mb-3 text-xs">
+          <div className="flex flex-wrap items-center justify-center space-x-2 mb-3 text-xs">
             <span className="bg-gray-800/80 px-2 py-1 rounded text-xs font-medium">
               {item.certification}
             </span>

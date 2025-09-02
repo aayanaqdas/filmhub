@@ -15,10 +15,10 @@ export default function Cards({ id, title, mediaType, posterPath, voteAverage, c
   if (mediaType === "person") {
     return (
       <div
-        className="flex flex-col items-center flex-shrink-0 w-32 sm:w-36 md:w-40 lg:w-44 cursor-pointer"
+        className="flex flex-col items-center flex-shrink-0 w-32 sm:w-36 md:w-40 lg:w-44 cursor-pointer "
         onClick={handleCardClick}
       >
-        <div className="w-31 h-31 sm:w-35 sm:h-35 md:w-39 md:h-39 lg:w-43 lg:h-43 rounded-full overflow-hidden mb-2 shadow-lg">
+        <div className="w-31 h-31 sm:w-35 sm:h-35 md:w-39 md:h-39 lg:w-43 lg:h-43 rounded-full overflow-hidden mb-2 shadow-lg  border-2  hover:border-white transform-border duration-300">
           <img src={baseImgUrl + posterPath} alt={title} className="w-full h-full object-cover" />
         </div>
         <div className="text-center">
@@ -38,7 +38,7 @@ export default function Cards({ id, title, mediaType, posterPath, voteAverage, c
   return (
     <div
       onClick={handleCardClick}
-      className="w-32 h-48 sm:w-36 sm:h-54 md:w-40 md:h-60 lg:w-48 lg:h-72 xl:w-52 xl:h-78 2xl:w-56 2xl:h-84 pb-4 rounded-md cursor-pointer flex-shrink-0 relative overflow-hidden shadow-2xl"
+      className="w-32 h-48 sm:w-36 sm:h-54 md:w-40 md:h-60 lg:w-48 lg:h-72 xl:w-52 xl:h-78 2xl:w-56 2xl:h-84 pb-4 rounded-md cursor-pointer flex-shrink-0 relative overflow-hidden shadow-2xl  border-2  hover:border-white transform-border duration-300"
       style={{
         backgroundImage: `url(${baseImgUrl + posterPath})`,
         backgroundSize: "cover",

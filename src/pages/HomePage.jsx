@@ -46,7 +46,7 @@ export default function HomePage() {
       <div className="w-full flex flex-col items-center">
         <CardSection sectionTitle="Trending this week" data={data.trending} mediaType="all" />
         <CardSection sectionTitle="Top rated TV-Shows" data={data.topRatedTv} mediaType="tv" />
-        <CardSection sectionTitle="Popular movies" data={data.popularMovies} mediaType="movie" />
+        <CardSection sectionTitle="Popular people" data={data.popularPeople} mediaType="person" />
       </div>
     </main>
   );

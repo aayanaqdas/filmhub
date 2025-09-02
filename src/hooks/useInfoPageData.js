@@ -32,7 +32,9 @@ export const useInfoPageData = (mediaType, id) => {
 
           if (mediaType === "movie") {
             // For movies: look into release_dates
-            const usRelease = certificationData.results.find((result) => result.iso_3166_1 === "US");
+            const usRelease = certificationData.results.find(
+              (result) => result.iso_3166_1 === "US"
+            );
 
             if (usRelease && usRelease.release_dates.length > 0) {
               certification = usRelease.release_dates[0].certification || "NR";

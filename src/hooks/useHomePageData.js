@@ -12,16 +12,16 @@ export const useHomePageData = () => {
     const fetchAllData = async () => {
       try {
         setLoading(true);
-        const [trending, topRatedTv, popularMovies] = await Promise.all([
+        const [trending, topRatedTv, popularPeople] = await Promise.all([
           tmdbApi.getTrending(),
           tmdbApi.getTopRatedTv(),
-          tmdbApi.getPopularMovies(),
+          tmdbApi.getPopularPeople(),
         ]);
 
         setData({
           trending: trending.results.filter(item => item.media_type !== 'person'),
           topRatedTv: topRatedTv.results,
-          popularMovies: popularMovies.results,
+          popularPeople: popularPeople.results,
         });
       } catch (err) {
         setError(err.message);

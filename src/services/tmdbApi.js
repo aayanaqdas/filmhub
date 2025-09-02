@@ -24,7 +24,7 @@ export const tmdbApi = {
   getPopularMovies: () => apiCall("/movie/popular"),
   getTopRatedMovies: () => apiCall("/movie/top_rated"),
   getTopRatedTv: () => apiCall("/tv/top_rated"),
-  getTrendingPeople: () => apiCall("/trending/person/week"),
+  getPopularPeople: () => apiCall("/person/popular"),
 
   // Carousel specific
   getNewReleases: () =>
