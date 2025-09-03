@@ -1,21 +1,31 @@
 import { useNavigate } from "react-router-dom";
-import { movieGenres } from "../../genres";
+import { movieGenres, tvGenres } from "../../genres";
 
 export default function HeroSlide({ item, isActive }) {
   const navigate = useNavigate();
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = baseImgUrl + item.backdrop_path;
 
-  const releaseYear = item.release_date ? item.release_date.slice(0, 4) : "N/A";
+  const releaseYear =
+    item.media_type === "movie"
+      ? item.release_date?.slice(0, 4) || "N/A"
+      : item.first_air_date?.slice(0, 4) || "N/A";
+
   const genreNames = item.genre_ids
     .map((genreId) => {
-      const genre = movieGenres.find((genre) => genre.id === genreId);
+      const genre =
+        item.media_type === "movie"
+          ? movieGenres.find((genre) => genre.id === genreId)
+          : tvGenres.find((genre) => genre.id === genreId);
       return genre ? genre.name : "N/A";
     })
     .join(", ");
 
+  const watchProvider = item.providers?.flatrate?.[0]?.provider_name;
+  const watchProviderLogo = item.providers?.flatrate?.[0]?.logo_path;
+
   const handleSlideClick = () => {
-    const path = `/movie/${item.id}`;
+    const path = `/${item.media_type}/${item.id}`;
     navigate(path);
   };
 
@@ -54,13 +64,27 @@ export default function HeroSlide({ item, isActive }) {
         }`}
       >
         <div className="max-w-2xl text-white">
-          {/* Status Badge */}
+          {/* Watch Provider or New Release Badge */}
           <div className="mb-4">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-primary-2 shadow-lg">
-              <span className="w-2 h-2 bg-white rounded-full mr-2 "></span>
-              NEW RELEASE
-            </span>
+            {watchProvider ? (
+              <div className="inline-flex items-center bg-black/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20 shadow-lg">
+                {watchProviderLogo && (
+                  <img
+                    src={`${baseImgUrl}${watchProviderLogo}`}
+                    alt={watchProvider}
+                    className="w-6 h-6 mr-2 rounded"
+                  />
+                )}
+                <span className="text-white text-sm font-medium">Watch on {watchProvider}</span>
+              </div>
+            ) : (
+              <span className="inline-flex items-center text-xs font-semibold bg-black/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20 shadow-lg">
+                <span className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>
+                Trending today
+              </span>
+            )}
           </div>
+
           {item.logoPath ? (
             <img
               src={`${baseImgUrl}${item.logoPath}`}
@@ -91,12 +115,25 @@ export default function HeroSlide({ item, isActive }) {
         }`}
       >
         <div className="text-white text-center">
-          {/* Mobile Status Badge */}
+          {/* Mobile Watch Provider or New Release Badge */}
           <div className="mb-3">
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold text-primary-2 shadow-lg">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5"></span>
-              NEW RELEASE
-            </span>
+            {watchProvider ? (
+              <div className="inline-flex items-center bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20 shadow-lg">
+                {watchProviderLogo && (
+                  <img
+                    src={`${baseImgUrl}${watchProviderLogo}`}
+                    alt={watchProvider}
+                    className="w-4 h-4 mr-1.5 rounded"
+                  />
+                )}
+                <span className="text-white text-xs font-medium">Watch on {watchProvider}</span>
+              </div>
+            ) : (
+              <span className="inline-flex text-xs items-center bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20 shadow-lg">
+                <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></span>
+                Trending today
+              </span>
+            )}
           </div>
 
           {item.logoPath ? (

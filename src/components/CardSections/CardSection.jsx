@@ -1,4 +1,4 @@
-import Cards from "./cards";
+import Cards from "./Cards";
 import NavigationButton from "../NavigationButton";
 import { useRef } from "react";
 
@@ -30,17 +30,15 @@ export default function CardSection({ sectionTitle, data, mediaType }) {
 
   // Render person cards (for cast members)
   if (mediaType === "person") {
-    const personCards = data.map((person) => {
-      return (
-        <Cards
-          key={person.id}
-          id={person.id}
-          mediaType={"person"}
-          posterPath={person.profile_path}
-          title={person.name}
-          character={person.character}
-        />
-      );
+    const personCards = data.map(person => {
+      return <Cards 
+        key={person.id}
+        id={person.id}
+        mediaType={"person"}
+        posterPath={person.profile_path}
+        title={person.name}
+        character={person.character}
+      />
     });
 
     return (

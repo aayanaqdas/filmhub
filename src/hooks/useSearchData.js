@@ -1,31 +1,27 @@
 import { useEffect, useState } from "react";
 import { tmdbApi } from "../services/tmdbApi";
 
-export const useCarouselData = () => {
-  const [carouselItems, setCarouselItems] = useState([]);
+export const useInfoPageData = (mediaType, id) => {
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const resultAmount = 10;
-
   useEffect(() => {
-    const fetchCarouselData = async () => {
+    const fetchMediaDetails = async () => {
       try {
         setLoading(true);
-        const trendingToday = await tmdbApi.getTrendingToday();
 
-        // Get first media and fetch their logos and certifications
-        const mediaWithDetails = await Promise.all(
-          trendingToday.results.slice(0, resultAmount).map(async (media) => {
-            try {
-              // Fetch logo and certification in parallel
-              const [imagesData, watchProviders, certificationData] = await Promise.all([
-                tmdbApi.getMediaImages(media.media_type, media.id),
-                tmdbApi.getWatchProviders(media.media_type, media.id),
-                media.media_type === "movie"
-                  ? tmdbApi.getMovieCertification(media.id)
-                  : tmdbApi.getTVCertification(media.id),
-              ]);
+        // Always fetch media details
+        const mediaDetails = await tmdbApi.getMediaDetails(mediaType, id);
+
+        // Only fetch images and certification for movies and TV shows, not for persons
+        if (mediaType !== "person") {
+          const [imagesData, certificationData] = await Promise.all([
+            tmdbApi.getMediaImages(mediaType, id),
+            mediaType === "movie"
+              ? tmdbApi.getMovieCertification(id)
+              : tmdbApi.getTVCertification(id),
+          ]);
 
           // Get English logo
           const englishLogos = imagesData.logos.filter((logo) => logo.iso_639_1 === "en");
@@ -34,7 +30,7 @@ export const useCarouselData = () => {
           // Get certification based on media type
           let certification = "NR";
 
-          if (media.media_type === "movie") {
+          if (mediaType === "movie") {
             // For movies: look into release_dates
             const usRelease = certificationData.results.find(
               (result) => result.iso_3166_1 === "US"
@@ -68,26 +64,15 @@ export const useCarouselData = () => {
             }
           }
 
-              const providers = watchProviders.results?.US || null;
-
-              return {
-                ...media,
-                logoPath,
-                certification,
-                providers,
-              };
-            } catch (err) {
-              console.log(`Error fetching details for media id ${media.id}:`, err);
-              return {
-                ...media,
-                logoPath: null,
-                certification: "NR",
-              };
-            }
-          })
-        );
-
-        setCarouselItems(mediaWithDetails);
+          setData({
+            ...mediaDetails,
+            logoPath,
+            certification,
+          });
+        } else {
+          // For person
+          setData(mediaDetails);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -95,8 +80,10 @@ export const useCarouselData = () => {
       }
     };
 
-    fetchCarouselData();
-  }, []);
+    if (mediaType && id) {
+      fetchMediaDetails();
+    }
+  }, [mediaType, id]);
 
-  return { carouselItems, loading, error };
+  return { data, loading, error };
 };

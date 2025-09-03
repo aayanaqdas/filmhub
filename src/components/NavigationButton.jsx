@@ -6,8 +6,8 @@ export default function NavigationButton({ direction, onClick }) {
       onClick={onClick}
       className={`absolute top-0 bottom-0 w-16 z-10 opacity-0 cursor-pointer hover:opacity-100 transition-opacity duration-300 ${
         isPrev
-          ? "left-0 bg-gradient-to-r from-black/70 to-transparent"
-          : "right-0 bg-gradient-to-l from-black/70 to-transparent"
+          ? "left-0 bg-gradient-to-r from-background/80 via-background/50 to-transparent"
+          : "right-0 bg-gradient-to-l from-background/80 via-background/50 to-transparent"
       } flex items-center justify-center text-white group`}
     >
       <svg

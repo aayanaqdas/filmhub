@@ -2,8 +2,8 @@ const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
 // Get current date and 1 month ago for theatrical window
-const today = new Date().toISOString().split("T")[0];
-const threeMonthsAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+// const today = new Date().toISOString().split("T")[0];
+// const threeMonthsAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
 
 const apiCall = async (endpoint) => {
   try {
@@ -20,17 +20,15 @@ const apiCall = async (endpoint) => {
 
 export const tmdbApi = {
   // Home page data
+
+  getTrendingToday: () => apiCall(`/trending/all/day`),
+  //`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&primary_release_date.gte=${threeMonthsAgo}&primary_release_date.lte=${today}&sort_by=popularity.desc&with_release_type=3`
+
   getTrending: () => apiCall("/trending/all/week"),
   getPopularMovies: () => apiCall("/movie/popular"),
   getTopRatedMovies: () => apiCall("/movie/top_rated"),
   getTopRatedTv: () => apiCall("/tv/top_rated"),
   getPopularPeople: () => apiCall("/person/popular"),
-
-  // Carousel specific
-  getNewReleases: () =>
-    apiCall(
-      `/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&primary_release_date.gte=${threeMonthsAgo}&primary_release_date.lte=${today}&sort_by=popularity.desc&with_release_type=3`
-    ),
 
   // Movie/TV details and certifications
   getMediaImages: (mediaType, id) => apiCall(`/${mediaType}/${id}/images`),
