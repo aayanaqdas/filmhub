@@ -11,7 +11,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/:mediaType/:id" element={<InfoPage />} />
-        <Route path="/search/:query" element={<SearchPage />} />
+        <Route path="/search" element={<SearchPage />} />
       </Routes>
     </>
   );

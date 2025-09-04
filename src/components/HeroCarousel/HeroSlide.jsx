@@ -21,12 +21,53 @@ export default function HeroSlide({ item, isActive }) {
     })
     .join(", ");
 
-  const watchProvider = item.providers?.flatrate?.[0]?.provider_name;
-  const watchProviderLogo = item.providers?.flatrate?.[0]?.logo_path;
+  // Check for watch providers in order of preference: flatrate, buy, rent
+  const getWatchProvider = () => {
+    if (item.providers?.flatrate?.[0]) {
+      return {
+        name: item.providers.flatrate[0].provider_name,
+        logo: item.providers.flatrate[0].logo_path,
+        type: "stream",
+      };
+    }
+
+    if (item.providers?.buy?.[0]) {
+      return {
+        name: item.providers.buy[0].provider_name,
+        logo: item.providers.buy[0].logo_path,
+        type: "buy",
+      };
+    }
+
+    if (item.providers?.rent?.[0]) {
+      return {
+        name: item.providers.rent[0].provider_name,
+        logo: item.providers.rent[0].logo_path,
+        type: "rent",
+      };
+    }
+
+    return null;
+  };
+
+  const watchProvider = getWatchProvider();
 
   const handleSlideClick = () => {
     const path = `/${item.media_type}/${item.id}`;
     navigate(path);
+  };
+
+  const getProviderText = (provider) => {
+    switch (provider.type) {
+      case "stream":
+        return `Watch on ${provider.name}`;
+      case "buy":
+        return `Buy on ${provider.name}`;
+      case "rent":
+        return `Rent on ${provider.name}`;
+      default:
+        return `Available on ${provider.name}`;
+    }
   };
 
   return (
@@ -68,19 +109,21 @@ export default function HeroSlide({ item, isActive }) {
           <div className="mb-4">
             {watchProvider ? (
               <div className="inline-flex items-center bg-black/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20 shadow-lg">
-                {watchProviderLogo && (
+                {watchProvider.logo && (
                   <img
-                    src={`${baseImgUrl}${watchProviderLogo}`}
-                    alt={watchProvider}
+                    src={`${baseImgUrl}${watchProvider.logo}`}
+                    alt={watchProvider.name}
                     className="w-6 h-6 mr-2 rounded"
                   />
                 )}
-                <span className="text-white text-sm font-medium">Watch on {watchProvider}</span>
+                <span className="text-white text-sm font-medium">
+                  {getProviderText(watchProvider)}
+                </span>
               </div>
             ) : (
               <span className="inline-flex items-center text-xs font-semibold bg-black/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20 shadow-lg">
                 <span className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>
-                Trending today
+                Trending right now
               </span>
             )}
           </div>
@@ -88,12 +131,12 @@ export default function HeroSlide({ item, isActive }) {
           {item.logoPath ? (
             <img
               src={`${baseImgUrl}${item.logoPath}`}
-              alt={item.title}
+              alt={item.title || item.name}
               className="h-16 md:h-20 lg:h-24 xl:h-32 mb-6 object-contain"
             />
           ) : (
             <h1 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">
-              {item.title}
+              {item.title || item.name}
             </h1>
           )}
 
@@ -119,19 +162,21 @@ export default function HeroSlide({ item, isActive }) {
           <div className="mb-3">
             {watchProvider ? (
               <div className="inline-flex items-center bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20 shadow-lg">
-                {watchProviderLogo && (
+                {watchProvider.logo && (
                   <img
-                    src={`${baseImgUrl}${watchProviderLogo}`}
-                    alt={watchProvider}
+                    src={`${baseImgUrl}${watchProvider.logo}`}
+                    alt={watchProvider.name}
                     className="w-4 h-4 mr-1.5 rounded"
                   />
                 )}
-                <span className="text-white text-xs font-medium">Watch on {watchProvider}</span>
+                <span className="text-white text-xs font-medium">
+                  {getProviderText(watchProvider)}
+                </span>
               </div>
             ) : (
               <span className="inline-flex text-xs items-center bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20 shadow-lg">
                 <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></span>
-                Trending today
+                Trending right now
               </span>
             )}
           </div>
@@ -139,11 +184,11 @@ export default function HeroSlide({ item, isActive }) {
           {item.logoPath ? (
             <img
               src={`${baseImgUrl}${item.logoPath}`}
-              alt={item.title}
+              alt={item.title || item.name}
               className="h-20 object-contain mx-auto mb-4"
             />
           ) : (
-            <h1 className="text-xl font-bold mb-4">{item.title}</h1>
+            <h1 className="text-xl font-bold mb-4">{item.title || item.name}</h1>
           )}
 
           <div className="flex flex-wrap items-center justify-center space-x-2 mb-3 text-xs">

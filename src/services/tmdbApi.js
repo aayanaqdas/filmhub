@@ -21,7 +21,8 @@ const apiCall = async (endpoint) => {
 export const tmdbApi = {
   // Home page data
 
-  getTrendingToday: () => apiCall(`/trending/all/day`),
+  getTrendingMovies: () => apiCall(`/trending/movie/day`),
+  getTrendingTV: () => apiCall(`/trending/tv/day`),
   //`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&primary_release_date.gte=${threeMonthsAgo}&primary_release_date.lte=${today}&sort_by=popularity.desc&with_release_type=3`
 
   getTrending: () => apiCall("/trending/all/week"),
@@ -44,7 +45,7 @@ export const tmdbApi = {
   getWatchProviders: (mediaType, id) => apiCall(`/${mediaType}/${id}/watch/providers`),
 
   // Search
-  searchMulti: (query) => apiCall(`/search/multi&query=${encodeURIComponent(query)}`),
+  searchMulti: (query) => apiCall(`/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`),
 
   // Discover
   discoverMovies: (params = "") => apiCall(`/discover/movie${params}`),
