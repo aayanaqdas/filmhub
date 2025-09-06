@@ -45,7 +45,7 @@ export const tmdbApi = {
   getWatchProviders: (mediaType, id) => apiCall(`/${mediaType}/${id}/watch/providers`),
 
   // Search
-  searchMulti: (query) => apiCall(`/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`),
+  searchMulti: (query, page) => apiCall(`/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=${page}`),
 
   // Discover
   discoverMovies: (params = "") => apiCall(`/discover/movie${params}`),

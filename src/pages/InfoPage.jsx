@@ -10,16 +10,16 @@ export default function InfoPage() {
 
   if (!data) {
     return (
-      <div className="w-full h-[70vh] bg-gray-800 animate-pulse flex items-center justify-center">
-        <div className="text-gray-400 text-lg">Loading...</div>
+      <div className="w-full h-[70vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-2"></div>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="w-full h-[70vh] bg-gray-800 animate-pulse flex items-center justify-center">
-        <div className="text-gray-400 text-lg">Loading...</div>
+      <div className="w-full h-[70vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-2"></div>
       </div>
     );
   }

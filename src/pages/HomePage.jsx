@@ -10,7 +10,7 @@ export default function HomePage() {
       <main>
         <div className="relative w-full h-[50vh] min-h-[500px] mt-5 overflow-hidden">
           <div className="flex items-center justify-center h-full">
-            <div className="text-white text-xl">Loading...</div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-2"></div>
           </div>
         </div>
         <div className="w-full flex flex-col items-center">
@@ -46,7 +46,7 @@ export default function HomePage() {
       <div className="w-full flex flex-col items-center">
         <CardSection sectionTitle="Trending this week" data={data.trending} mediaType="all" />
         <CardSection sectionTitle="Top rated TV-Shows" data={data.topRatedTv} mediaType="tv" />
-        <CardSection sectionTitle="Popular people" data={data.popularPeople} mediaType="person" />
+       <CardSection sectionTitle="Popular people" data={data.popularPeople} mediaType="person" />
       </div>
     </main>
   );

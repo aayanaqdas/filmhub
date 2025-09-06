@@ -6,16 +6,20 @@ import SearchCard from "../components/CardSections/SearchCard";
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [page, setPage] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const {
     data: searchData,
     loading: searchLoading,
     error: searchError,
-  } = useSearchData(searchQuery);
+  } = useSearchData(searchQuery, page);
   console.log(searchData);
 
   useEffect(() => {
     const query = searchParams.get("q") || "";
     setSearchQuery(query);
+    setPage(1);
+    setIsLoadingMore(false);
   }, [searchParams]);
 
   const handleSearchChange = (e) => {
@@ -29,6 +33,33 @@ export default function SearchPage() {
       setSearchParams({});
     }
   };
+
+  useEffect(() => {
+    if (!searchLoading) {
+      setIsLoadingMore(false);
+    }
+  }, [searchLoading]);
+
+  const detectEnd = () => {
+    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 200) {
+      if (!searchLoading && !isLoadingMore && searchData?.total_pages > page) {
+        setIsLoadingMore(true);
+        setPage((prevPage) => prevPage + 1);
+        console.log("load more", page);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      document.addEventListener("scroll", detectEnd);
+
+      return () => {
+        document.removeEventListener("scroll", detectEnd);
+      };
+    }
+  }, [searchQuery, searchLoading, isLoadingMore, page, searchData?.total_pages]);
 
   const renderDefaultContent = () => {
     return (
@@ -46,7 +77,8 @@ export default function SearchPage() {
   };
 
   const renderSearchResults = () => {
-    if (searchLoading) {
+    // Skeelton only for page 1 or no data
+    if (searchLoading && (page === 1 || !searchData?.results?.length)) {
       return (
         <div className="w-full max-w-7xl mx-auto px-6">
           <div className="space-y-4">
@@ -76,7 +108,7 @@ export default function SearchPage() {
       );
     }
 
-    if (searchData.total_results === 0 && searchQuery.trim()) {
+    if (searchData?.total_results === 0 && searchQuery.trim()) {
       return (
         <div className="w-full max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center justify-center py-20">
@@ -89,6 +121,7 @@ export default function SearchPage() {
       );
     }
 
+    // Show results
     return (
       <div className="w-full max-w-7xl mx-auto px-6">
         <div className="mb-6">
@@ -100,9 +133,9 @@ export default function SearchPage() {
         </div>
 
         <div className="space-y-4">
-          {searchData?.results?.map((item) => (
+          {searchData?.results?.map((item, index) => (
             <SearchCard
-              key={`${item.id}-${item.media_type}`}
+              key={`${item.id}-${item.media_type}-${index}`} // Use index for better uniqueness
               id={item.id}
               title={item.title || item.name}
               mediaType={item.media_type}
@@ -114,7 +147,13 @@ export default function SearchPage() {
             />
           ))}
         </div>
-        <button className="text-primary text-md pt-10 cursor-pointer">Load more</button>
+
+        {/* Show loading spinner */}
+        {isLoadingMore && (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-2"></div>
+          </div>
+        )}
       </div>
     );
   };
