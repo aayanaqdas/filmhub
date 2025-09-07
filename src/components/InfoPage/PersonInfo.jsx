@@ -1,10 +1,10 @@
 import { useState } from "react";
 import CardSection from "../CardSections/CardSection";
+import noImg from "../../assets/no_image.svg";
 
 export default function PersonInfo({ data, loading, error }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const faceImgUrl = "https://image.tmdb.org/t/p/w300_and_h300_face";
-  console.log(data)
 
   if (loading) {
     return (
@@ -91,7 +91,7 @@ export default function PersonInfo({ data, loading, error }) {
           {/* Profile Image */}
           <div className="flex-shrink-0">
             <img
-              src={faceImgUrl + data.profile_path}
+              src={data.profile_path ? faceImgUrl + data.profile_path : noImg}
               alt={data.name}
               className="w-64 h-80 md:w-80 md:h-96 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
             />

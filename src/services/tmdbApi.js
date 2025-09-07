@@ -38,7 +38,8 @@ export const tmdbApi = {
   getMediaDetails: (mediaType, id, appendToResponse) =>
     apiCall(
       `/${mediaType}/${id}?append_to_response=${appendToResponse},${
-        mediaType === "person" ? "combined_credits" : "credits"}`
+        mediaType === "person" ? "combined_credits" : "credits"
+      }`
     ),
 
   getWatchProviders: (mediaType, id) => apiCall(`/${mediaType}/${id}/watch/providers`),

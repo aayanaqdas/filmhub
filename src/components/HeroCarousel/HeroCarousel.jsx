@@ -10,8 +10,6 @@ import { useCarouselData } from "../../hooks/useCarouselData";
 export default function HeroCarousel() {
   const { carouselItems, loading, error } = useCarouselData();
 
-  console.log(carouselItems);
-
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
     Autoplay({ delay: 5000, stopOnInteraction: false }),
   ]);

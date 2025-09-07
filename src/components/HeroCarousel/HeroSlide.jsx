@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { movieGenres, tvGenres } from "../../genres";
 
 export default function HeroSlide({ item, isActive }) {
   const navigate = useNavigate();
@@ -11,38 +10,77 @@ export default function HeroSlide({ item, isActive }) {
       ? item.release_date?.slice(0, 4) || "N/A"
       : item.first_air_date?.slice(0, 4) || "N/A";
 
-  const genreNames = item.genre_ids
-    .map((genreId) => {
-      const genre =
-        item.media_type === "movie"
-          ? movieGenres.find((genre) => genre.id === genreId)
-          : tvGenres.find((genre) => genre.id === genreId);
-      return genre ? genre.name : "N/A";
-    })
-    .join(", ");
+  const runtimeHour = item.runtime && item.runtime > 60 ? Math.floor(item.runtime / 60) : 0;
+  const runtimeMinute = item.runtime && item.runtime > 60 ? item.runtime % 60 : item.runtime || 0;
+  const formatRuntime = runtimeHour > 0 ? `${runtimeHour}h ${runtimeMinute}m` : `${runtimeMinute}m`;
+
+  const runtime =
+    item.media_type === "tv" && item.seasons
+      ? `${item.seasons.length} Season${item.seasons.length > 1 ? "s" : ""}`
+      : formatRuntime;
+
+  const genreNames = item.genres?.map((genre) => genre.name).join(", ");
+
+  // Process logo
+  const englishLogos = item.images?.logos?.filter((logo) => logo.iso_639_1 === "en") || [];
+  const logoPath = englishLogos.length > 0 ? englishLogos[0].file_path : null;
+
+  let certification = "NR";
+
+  if (item.media_type === "movie") {
+    const usRelease = item.release_dates?.results?.find((result) => result.iso_3166_1 === "US");
+
+    if (usRelease && usRelease.release_dates.length > 0) {
+      certification = usRelease.release_dates[0].certification || "NR";
+    } else {
+      // Fallback to any other country with certification
+      for (const result of item.release_dates?.results || []) {
+        if (result.release_dates.length > 0 && result.release_dates[0].certification) {
+          certification = result.release_dates[0].certification;
+          break;
+        }
+      }
+    }
+  } else {
+    const usRating = item.content_ratings?.results?.find((result) => result.iso_3166_1 === "US");
+
+    if (usRating && usRating.rating) {
+      certification = usRating.rating;
+    } else {
+      // Fallback to any other country with rating
+      for (const result of item.content_ratings?.results || []) {
+        if (result.rating) {
+          certification = result.rating;
+          break;
+        }
+      }
+    }
+  }
 
   // Check for watch providers in order of preference: flatrate, buy, rent
   const getWatchProvider = () => {
-    if (item.providers?.flatrate?.[0]) {
+    const watchProviders = item["watch/providers"].results?.US || null;
+
+    if (watchProviders?.flatrate?.[0]) {
       return {
-        name: item.providers.flatrate[0].provider_name,
-        logo: item.providers.flatrate[0].logo_path,
+        name: watchProviders.flatrate[0].provider_name,
+        logo: watchProviders.flatrate[0].logo_path,
         type: "stream",
       };
     }
 
-    if (item.providers?.buy?.[0]) {
+    if (watchProviders?.buy?.[0]) {
       return {
-        name: item.providers.buy[0].provider_name,
-        logo: item.providers.buy[0].logo_path,
+        name: watchProviders.buy[0].provider_name,
+        logo: watchProviders.buy[0].logo_path,
         type: "buy",
       };
     }
 
-    if (item.providers?.rent?.[0]) {
+    if (watchProviders?.rent?.[0]) {
       return {
-        name: item.providers.rent[0].provider_name,
-        logo: item.providers.rent[0].logo_path,
+        name: watchProviders.rent[0].provider_name,
+        logo: watchProviders.rent[0].logo_path,
         type: "rent",
       };
     }
@@ -51,11 +89,6 @@ export default function HeroSlide({ item, isActive }) {
   };
 
   const watchProvider = getWatchProvider();
-
-  const handleSlideClick = () => {
-    const path = `/${item.media_type}/${item.id}`;
-    navigate(path);
-  };
 
   const getProviderText = (provider) => {
     switch (provider.type) {
@@ -68,6 +101,11 @@ export default function HeroSlide({ item, isActive }) {
       default:
         return `Available on ${provider.name}`;
     }
+  };
+
+  const handleSlideClick = () => {
+    const path = `/${item.media_type}/${item.id}`;
+    navigate(path);
   };
 
   return (
@@ -128,9 +166,9 @@ export default function HeroSlide({ item, isActive }) {
             )}
           </div>
 
-          {item.logoPath ? (
+          {logoPath ? (
             <img
-              src={`${baseImgUrl}${item.logoPath}`}
+              src={`${baseImgUrl}${logoPath}`}
               alt={item.title || item.name}
               className="h-16 md:h-20 lg:h-24 xl:h-32 mb-6 object-contain"
             />
@@ -142,10 +180,10 @@ export default function HeroSlide({ item, isActive }) {
 
           <div className="flex items-center space-x-4 mb-4">
             <span className="bg-gray-800/80 px-3 py-1 rounded-xl text-sm font-medium">
-              {item.certification}
+              {certification}
             </span>
             <span className="text-gray-300 text-sm">
-              {releaseYear} • {genreNames}
+              {releaseYear} • {runtime} • {genreNames}
             </span>
           </div>
         </div>
@@ -181,9 +219,9 @@ export default function HeroSlide({ item, isActive }) {
             )}
           </div>
 
-          {item.logoPath ? (
+          {logoPath ? (
             <img
-              src={`${baseImgUrl}${item.logoPath}`}
+              src={`${baseImgUrl}${logoPath}`}
               alt={item.title || item.name}
               className="h-20 object-contain mx-auto mb-4"
             />
@@ -193,9 +231,11 @@ export default function HeroSlide({ item, isActive }) {
 
           <div className="flex flex-wrap items-center justify-center space-x-2 mb-3 text-xs">
             <span className="bg-gray-800/80 px-2 py-1 rounded text-xs font-medium">
-              {item.certification}
+              {certification}
             </span>
             <span className="text-white">{releaseYear}</span>
+            <span className="text-white">•</span>
+            <span className="text-white">{runtime}</span>
             <span className="text-white">•</span>
             <span className="text-white text-center">{genreNames}</span>
           </div>
