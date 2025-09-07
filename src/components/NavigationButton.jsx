@@ -4,7 +4,7 @@ export default function NavigationButton({ direction, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`absolute top-0 bottom-0 w-16 z-10 opacity-0 cursor-pointer hover:opacity-100 transition-opacity duration-300 ${
+      className={`absolute top-0 bottom-0 w-16 z-30 opacity-0 cursor-pointer hover:opacity-100 transition-opacity duration-300 ${
         isPrev
           ? "left-0 bg-gradient-to-r from-background/80 via-background/50 to-transparent"
           : "right-0 bg-gradient-to-l from-background/80 via-background/50 to-transparent"

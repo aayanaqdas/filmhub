@@ -30,6 +30,42 @@ export default function HeroSection({ data, mediaType }) {
   const voteCount =
     voteCountString.length > 3 ? (data.vote_count / 1000).toFixed(1) + "k" : voteCountString;
 
+  // Process logo
+  const englishLogos = data.images?.logos?.filter((logo) => logo.iso_639_1 === "en") || [];
+  const logoPath = englishLogos.length > 0 ? englishLogos[0].file_path : null;
+
+  let certification = "NR";
+
+  if (mediaType === "movie") {
+    const usRelease = data.release_dates?.results?.find((result) => result.iso_3166_1 === "US");
+
+    if (usRelease && usRelease.release_dates.length > 0) {
+      certification = usRelease.release_dates[0].certification || "NR";
+    } else {
+      // Fallback to any other country with certification
+      for (const result of data.release_dates?.results || []) {
+        if (result.release_dates.length > 0 && result.release_dates[0].certification) {
+          certification = result.release_dates[0].certification;
+          break;
+        }
+      }
+    }
+  } else {
+    const usRating = data.content_ratings?.results?.find((result) => result.iso_3166_1 === "US");
+
+    if (usRating && usRating.rating) {
+      certification = usRating.rating;
+    } else {
+      // Fallback to any other country with rating
+      for (const result of data.content_ratings?.results || []) {
+        if (result.rating) {
+          certification = result.rating;
+          break;
+        }
+      }
+    }
+  }
+
   // If no backdrop, show a fallback layout
   if (!backDropUrl) {
     return (
@@ -91,7 +127,7 @@ export default function HeroSection({ data, mediaType }) {
           <div className="max-w-2xl text-white">
             {data.logoPath ? (
               <img
-                src={`${baseImgUrl}${data.logoPath}`}
+                src={`${baseImgUrl}${logoPath}`}
                 alt={title}
                 className="h-16 md:h-20 lg:h-24 xl:h-32 mb-6 object-contain"
               />
@@ -103,7 +139,7 @@ export default function HeroSection({ data, mediaType }) {
 
             <div className="flex items-center space-x-4 mb-4">
               <span className="bg-gray-800/80 px-3 py-1 rounded-xl text-sm font-medium">
-                {data.certification || "NR"}
+                {certification || "NR"}
               </span>
               <span className="text-white text-md">
                 {releaseYear} • {runtime} • {genreNames}
@@ -146,7 +182,7 @@ export default function HeroSection({ data, mediaType }) {
             <div className="text-white max-w-xs">
               {data.logoPath ? (
                 <img
-                  src={`${baseImgUrl}${data.logoPath}`}
+                  src={`${baseImgUrl}${logoPath}`}
                   alt={title}
                   className="h-12 object-contain mb-4"
                 />
@@ -158,7 +194,7 @@ export default function HeroSection({ data, mediaType }) {
         </div>
         <div className="flex items-center space-x-2 px-6 mb-3 text-sm text-white">
           <span className="bg-gray-800/80 px-2 py-1 rounded text-xs font-medium">
-            {data.certification || "NR"}
+            {certification || "NR"}
           </span>
           <span className="text-white">{releaseYear}</span>
           <span className="text-white">•</span>

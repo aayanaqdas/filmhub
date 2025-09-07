@@ -35,17 +35,21 @@ export const tmdbApi = {
   getMediaImages: (mediaType, id) => apiCall(`/${mediaType}/${id}/images`),
   getMovieCertification: (id) => apiCall(`/movie/${id}/release_dates`),
   getTVCertification: (id) => apiCall(`/tv/${id}/content_ratings`),
-  getMediaDetails: (mediaType, id) =>
+  getMediaDetails: (mediaType, id, appendToResponse) =>
     apiCall(
-      `/${mediaType}/${id}?append_to_response=${
-        mediaType === "person" ? "combined_credits" : "credits"
-      }`
+      `/${mediaType}/${id}?append_to_response=${appendToResponse},${
+        mediaType === "person" ? "combined_credits" : "credits"}`
     ),
 
   getWatchProviders: (mediaType, id) => apiCall(`/${mediaType}/${id}/watch/providers`),
 
   // Search
-  searchMulti: (query, page) => apiCall(`/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=${page}`),
+  searchMulti: (query, page) =>
+    apiCall(
+      `/search/multi?query=${encodeURIComponent(
+        query
+      )}&include_adult=false&language=en-US&page=${page}`
+    ),
 
   // Discover
   discoverMovies: (params = "") => apiCall(`/discover/movie${params}`),

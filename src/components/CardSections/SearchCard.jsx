@@ -1,21 +1,36 @@
 import { useNavigate } from "react-router-dom";
 import StarRating from "../StarRating";
+import noImg from "../../assets/no_image.svg";
+import noImgPerson from "../../assets/no_person_img.svg";
 
-export default function SearchCard({ id, title, mediaType, posterPath, voteAverage, overview, releaseDate, firstAirDate }) {
+export default function SearchCard({
+  id,
+  title,
+  mediaType,
+  posterPath,
+  voteAverage,
+  overview,
+  releaseDate,
+  firstAirDate,
+}) {
   const navigate = useNavigate();
   const baseImgUrl = `https://image.tmdb.org/t/p/w500`;
   const maxOverviewLength = 200;
   const maxTitleLength = 40;
-  
-  const truncatedTitle = title && title.length > maxTitleLength 
-    ? title.substring(0, maxTitleLength) + "..." 
-    : title;
-  
-  const truncatedOverview = overview && overview.length > maxOverviewLength 
-    ? overview.substring(0, maxOverviewLength) + "..." 
-    : overview;
 
-  const year = releaseDate ? releaseDate.slice(0, 4) : firstAirDate ? firstAirDate.slice(0, 4) : null;
+  const truncatedTitle =
+    title && title.length > maxTitleLength ? title.substring(0, maxTitleLength) + "..." : title;
+
+  const truncatedOverview =
+    overview && overview.length > maxOverviewLength
+      ? overview.substring(0, maxOverviewLength) + "..."
+      : overview;
+
+  const year = releaseDate
+    ? releaseDate.slice(0, 4)
+    : firstAirDate
+    ? firstAirDate.slice(0, 4)
+    : null;
 
   const handleCardClick = () => {
     const path = `/${mediaType}/${id}`;
@@ -30,20 +45,16 @@ export default function SearchCard({ id, title, mediaType, posterPath, voteAvera
         onClick={handleCardClick}
       >
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex-shrink-0 shadow-lg border-2 border-gray-600">
-          <img 
-            src={posterPath ? baseImgUrl + posterPath : '/default-person.jpg'} 
-            alt={title} 
-            className="w-full h-full object-cover" 
+          <img
+            src={posterPath ? baseImgUrl + posterPath : noImgPerson}
+            alt={title}
+            className="w-full h-full object-cover"
           />
         </div>
-        
+
         <div className="ml-4 flex-1">
-          <h3 className="text-white text-lg font-semibold mb-1">
-            {truncatedTitle}
-          </h3>
-          <p className="text-primary-2 text-sm opacity-80">
-            Person
-          </p>
+          <h3 className="text-white text-lg font-semibold mb-1">{truncatedTitle}</h3>
+          <p className="text-primary-2 text-sm opacity-80">Person</p>
         </div>
       </div>
     );
@@ -56,10 +67,10 @@ export default function SearchCard({ id, title, mediaType, posterPath, voteAvera
     >
       {/* Poster */}
       <div className="w-20 h-30 sm:w-24 sm:h-36 md:w-28 md:h-42 flex-shrink-0 rounded-md overflow-hidden shadow-lg">
-        <img 
-          src={posterPath ? baseImgUrl + posterPath : '/default-poster.jpg'} 
-          alt={title} 
-          className="w-full h-full object-cover" 
+        <img
+          src={posterPath ? baseImgUrl + posterPath : noImg}
+          alt={title}
+          className="w-full h-full object-cover"
         />
       </div>
 
@@ -71,11 +82,7 @@ export default function SearchCard({ id, title, mediaType, posterPath, voteAvera
               {truncatedTitle}
             </h3>
             <div className="flex items-center gap-3 mb-2">
-              {year && (
-                <span className="text-primary-2 text-sm font-medium">
-                  {year}
-                </span>
-              )}
+              {year && <span className="text-primary-2 text-sm font-medium">{year}</span>}
               {mediaType === "tv" && (
                 <span className="px-2 py-1 bg-primary-2/20 text-primary-2 text-xs rounded-full">
                   TV Series
@@ -98,11 +105,7 @@ export default function SearchCard({ id, title, mediaType, posterPath, voteAvera
         )}
 
         {/* Overview */}
-        {overview && (
-          <p className="text-gray-300 text-sm leading-relaxed">
-            {truncatedOverview}
-          </p>
-        )}
+        {overview && <p className="text-gray-300 text-sm leading-relaxed">{truncatedOverview}</p>}
       </div>
     </div>
   );

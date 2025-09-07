@@ -4,6 +4,7 @@ import CardSection from "../CardSections/CardSection";
 export default function PersonInfo({ data, loading, error }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const faceImgUrl = "https://image.tmdb.org/t/p/w300_and_h300_face";
+  console.log(data)
 
   if (loading) {
     return (

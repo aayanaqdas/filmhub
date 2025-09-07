@@ -30,7 +30,7 @@ export default function CardSection({ sectionTitle, data, mediaType }) {
 
   // Render person cards (for cast members)
   if (mediaType === "person") {
-    const personCards = data.map(person => {
+    const personCards = data?.map(person => {
       return <Cards 
         key={person.id}
         id={person.id}
@@ -61,7 +61,7 @@ export default function CardSection({ sectionTitle, data, mediaType }) {
   }
 
   // Render movie/TV cards
-  const cards = data.map((media) => {
+  const cards = data?.map((media) => {
     return (
       <Cards
         key={media.id}

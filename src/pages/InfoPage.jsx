@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 export default function InfoPage() {
   const { mediaType, id } = useParams();
   const { data, loading, error } = useInfoPageData(mediaType, id);
+  console.log(data);
 
   if (!data) {
     return (
