@@ -6,6 +6,7 @@ import SearchCard from "../components/CardSections/SearchCard";
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [inputValue, setInputValue] = useState(searchParams.get("q") || "");
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const {
@@ -15,20 +16,30 @@ export default function SearchPage() {
   } = useSearchData(searchQuery, page);
   console.log(searchData);
 
+  // Handle URL changes (for link sharing)
   useEffect(() => {
     const query = searchParams.get("q") || "";
     setSearchQuery(query);
+    setInputValue(query);
     setPage(1);
     setIsLoadingMore(false);
   }, [searchParams]);
 
+  // Only update input value, don't trigger search
   const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchQuery(value);
+    setInputValue(e.target.value);
+  };
 
-    // Update URL with search query
-    if (value.trim()) {
-      setSearchParams({ q: value });
+  // Handle form submission (Enter key)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Update search query and URL
+    setSearchQuery(inputValue);
+    setPage(1);
+
+    if (inputValue.trim()) {
+      setSearchParams({ q: inputValue });
     } else {
       setSearchParams({});
     }
@@ -161,15 +172,16 @@ export default function SearchPage() {
   return (
     <div className="w-full flex flex-col items-center pt-20 pb-20">
       <div className="w-full max-w-4xl mx-auto px-6 mb-8">
-        <div className="relative">
+        <form onSubmit={handleSubmit} className="relative">
           <input
-            type="text"
+            type="search"
             placeholder="Search for movies, TV shows, people..."
-            value={searchQuery}
+            value={inputValue}
             onChange={handleSearchChange}
-            className="w-full px-6 py-4 bg-gray-800/80 text-white rounded-lg border border-gray-700 focus:border-primary-2 focus:outline-none focus:ring-2 focus:ring-primary-2/20 transition-all duration-300 text-lg"
+            className="w-full px-6 py-4 pr-12 bg-gray-800/80 text-white rounded-lg border border-gray-700 focus:border-primary-2 focus:outline-none focus:ring-2 focus:ring-primary-2/20 transition-all duration-300 text-lg"
+            autoComplete="off"
           />
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
             <svg
               className="w-6 h-6 text-gray-400"
               fill="none"
@@ -184,7 +196,7 @@ export default function SearchPage() {
               />
             </svg>
           </div>
-        </div>
+        </form>
       </div>
       {searchQuery ? renderSearchResults() : renderDefaultContent()}
     </div>

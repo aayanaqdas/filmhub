@@ -1,13 +1,23 @@
 import CardSection from "../components/CardSections/CardSection";
 import HeroSection from "../components/InfoPage/HeroSection";
 import PersonInfo from "../components/InfoPage/PersonInfo";
+import WatchProviderSection from "../components/InfoPage/WatchProviders";
 import { useInfoPageData } from "../hooks/useInfoPageData";
 import { useParams } from "react-router-dom";
+import { useRef } from "react";
 
 export default function InfoPage() {
   const { mediaType, id } = useParams();
   const { data, loading, error } = useInfoPageData(mediaType, id);
+  const watchNowRef = useRef(null);
   console.log(data);
+
+  const scrollToWatchNow = () => {
+    watchNowRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   if (!data) {
     return (
@@ -39,9 +49,11 @@ export default function InfoPage() {
     return <PersonInfo data={data} loading={loading} error={error} />;
   }
 
+  const watchProviders = data["watch/providers"]?.results?.US || null;
+
   return (
     <div className="w-full h-full flex flex-col items-center">
-      <HeroSection data={data} mediaType={mediaType} />
+      <HeroSection data={data} mediaType={mediaType} onWatchNowClick={scrollToWatchNow} />
 
       {/* Content */}
       <div className="w-full max-w-7xl mx-auto">
@@ -70,6 +82,9 @@ export default function InfoPage() {
               </div>
             </div>
           )}
+          <div ref={watchNowRef}>
+            <WatchProviderSection watchProviders={watchProviders} />
+          </div>
         </div>
 
         {data?.credits?.cast && data.credits.cast.length > 0 && (
@@ -78,6 +93,16 @@ export default function InfoPage() {
             data={data.credits.cast.slice(0, 10)}
             mediaType={"person"}
           />
+        )}
+        {data?.recommendations?.results && data.recommendations.results.length > 0 && (
+          <CardSection
+            sectionTitle={"Recommended"}
+            data={data.recommendations.results}
+            mediaType={mediaType}
+          />
+        )}
+        {data?.similar?.results && data.similar.results.length > 0 && (
+          <CardSection sectionTitle={"Similar"} data={data.similar.results} mediaType={mediaType} />
         )}
       </div>
     </div>

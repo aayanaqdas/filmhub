@@ -1,7 +1,7 @@
 import StarRating from "../StarRating";
 import noImg from "../../assets/no_image.svg";
 
-export default function HeroSection({ data, mediaType }) {
+export default function HeroSection({ data, mediaType, onWatchNowClick }) {
   if (!data) {
     return (
       <div className="w-full h-[70vh] bg-gray-800 animate-pulse flex items-center justify-center">
@@ -114,7 +114,10 @@ export default function HeroSection({ data, mediaType }) {
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-4">
-              <button className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 flex items-center space-x-2 cursor-pointer">
+              <button
+                onClick={onWatchNowClick}
+                className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 flex items-center space-x-2 cursor-pointer"
+              >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z" />
                 </svg>
@@ -171,7 +174,10 @@ export default function HeroSection({ data, mediaType }) {
 
         {/* Action Buttons */}
         <div className="w-full flex flex-col items-center gap-5 p-6">
-          <button className="bg-primary text-white flex items-center justify-center w-full px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 space-x-2 cursor-pointer">
+          <button
+            onClick={onWatchNowClick}
+            className="bg-primary text-white flex items-center justify-center w-full px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 space-x-2 cursor-pointer"
+          >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>

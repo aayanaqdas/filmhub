@@ -14,8 +14,8 @@ export const useInfoPageData = (mediaType, id) => {
         // Single API call with all data appended
         const appendToResponse =
           mediaType === "movie"
-            ? "images,release_dates,credits,videos,similar"
-            : "images,content_ratings,credits,videos,similar";
+            ? "images,release_dates,credits,videos,similar,recommendations,watch/providers"
+            : "images,content_ratings,credits,videos,similar,recommendations,watch/providers";
 
         const mediaDetails = await tmdbApi.getMediaDetails(mediaType, id, appendToResponse);
 

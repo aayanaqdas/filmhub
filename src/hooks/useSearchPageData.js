@@ -14,7 +14,7 @@ export const useSearchData = (query, page) => {
       setError(null);
       return;
     }
-    
+
     // Clear previous results when starting a new search
     if (page === 1) {
       setData([]);
@@ -51,13 +51,7 @@ export const useSearchData = (query, page) => {
       }
     };
 
-    if (page === 1) {
-      // Debounce search for first page
-      const timeoutId = setTimeout(searchData, 1000);
-      return () => clearTimeout(timeoutId);
-    } else {
-      searchData();
-    }
+    searchData();
   }, [query, page]);
 
   return { data, loading, error };
