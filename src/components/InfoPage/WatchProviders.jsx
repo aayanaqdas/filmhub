@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import RegionSelect from "../RegionSelect";
 import cameraIcon from "../../assets/camera-icon.svg";
 
 export default function WatchProviderSection({ watchProviders }) {
@@ -102,10 +103,20 @@ export default function WatchProviderSection({ watchProviders }) {
 
   return (
     <section className="w-full pt-5">
-      <h1 className="text-white text-2xl md:text-3xl font-bold mb-4">Watch now</h1>
+      <div className="flex justify-between">
+        <h1 className="text-white text-2xl md:text-3xl font-bold mb-4">Watch now</h1>
+        <div className="md:hidden">
+          <RegionSelect />
+        </div>
+      </div>
       <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50">
         <div className="w-full p-4 border-b border-gray-700/50">
-          <div className="flex gap-2 flex-wrap">{tabBtns}</div>
+          <div className="flex flex-wrap justify-between">
+            <div className="flex flex-wrap gap-2">{tabBtns}</div>
+            <div className="hidden md:block">
+              <RegionSelect />
+            </div>
+          </div>
         </div>
         <div className="p-4 md:p-6">
           {currentData.length > 0 ? (
