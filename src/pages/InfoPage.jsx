@@ -12,6 +12,8 @@ export default function InfoPage() {
   const watchNowRef = useRef(null);
   console.log(data);
 
+  const userRegion = JSON.parse(localStorage.getItem("region")) || "US";
+
   const scrollToWatchNow = () => {
     watchNowRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -49,7 +51,7 @@ export default function InfoPage() {
     return <PersonInfo data={data} loading={loading} error={error} />;
   }
 
-  const watchProviders = data["watch/providers"]?.results?.US || null;
+  const watchProviders = data["watch/providers"]?.results?.[userRegion] || null;
 
   return (
     <div className="w-full h-full flex flex-col items-center">

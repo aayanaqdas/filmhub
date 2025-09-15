@@ -4,7 +4,7 @@ export default function HeroSlide({ item, isActive }) {
   const navigate = useNavigate();
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = baseImgUrl + item.backdrop_path;
-
+  const userRegion = JSON.parse(localStorage.getItem("region"));
   const releaseYear =
     item.media_type === "movie"
       ? item.release_date?.slice(0, 4) || "N/A"
@@ -28,10 +28,10 @@ export default function HeroSlide({ item, isActive }) {
   let certification = "NR";
 
   if (item.media_type === "movie") {
-    const usRelease = item.release_dates?.results?.find((result) => result.iso_3166_1 === "US");
+    const release = item.release_dates?.results?.find((result) => result.iso_3166_1 === userRegion);
 
-    if (usRelease && usRelease.release_dates.length > 0) {
-      certification = usRelease.release_dates[0].certification || "NR";
+    if (release && release.release_dates.length > 0) {
+      certification = release.release_dates[0].certification || "NR";
     } else {
       // Fallback to any other country with certification
       for (const result of item.release_dates?.results || []) {
@@ -42,10 +42,12 @@ export default function HeroSlide({ item, isActive }) {
       }
     }
   } else {
-    const usRating = item.content_ratings?.results?.find((result) => result.iso_3166_1 === "US");
+    const rating = item.content_ratings?.results?.find(
+      (result) => result.iso_3166_1 === userRegion
+    );
 
-    if (usRating && usRating.rating) {
-      certification = usRating.rating;
+    if (rating && rating.rating) {
+      certification = rating.rating;
     } else {
       // Fallback to any other country with rating
       for (const result of item.content_ratings?.results || []) {
@@ -59,7 +61,7 @@ export default function HeroSlide({ item, isActive }) {
 
   // Check for watch providers in order of preference: flatrate, buy, rent
   const getWatchProvider = () => {
-    const watchProviders = item["watch/providers"].results?.US || null;
+    const watchProviders = item["watch/providers"].results?.[userRegion] || null;
 
     if (watchProviders?.flatrate?.[0]) {
       return {
