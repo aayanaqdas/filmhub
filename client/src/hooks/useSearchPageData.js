@@ -36,12 +36,12 @@ export const useSearchData = (query, page) => {
         const response = await tmdbApi.searchMulti(query, page);
 
         if (page === 1) {
-          setData(response);
+          setData(response.data); // Replace data for new search
         } else {
           setData((prevData) => ({
-            ...response,
-            results: [...(prevData?.results || []), ...response.results],
-          }));
+            ...response.data,
+            results: [...(prevData?.results || []), ...response.data.results],
+          })); // Append results for pagination
         }
       } catch (err) {
         setError(err.message);

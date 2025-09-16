@@ -6,7 +6,6 @@ import SearchCard from "../components/CardSections/SearchCard";
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
-  const [inputValue, setInputValue] = useState(searchParams.get("q") || "");
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const {
@@ -20,19 +19,17 @@ export default function SearchPage() {
   useEffect(() => {
     const query = searchParams.get("q") || "";
     setSearchQuery(query);
-    setInputValue(query);
     setPage(1);
     setIsLoadingMore(false);
   }, [searchParams]);
 
-  // Only update input value, don't trigger search
-  const handleSearchChange = (e) => {
-    setInputValue(e.target.value);
-  };
-
   // Handle form submission (Enter key)
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Get value directly from the form
+    const formData = new FormData(e.target);
+    const inputValue = formData.get("search");
 
     // Update search query and URL
     setSearchQuery(inputValue);
@@ -174,10 +171,10 @@ export default function SearchPage() {
       <div className="w-full max-w-4xl mx-auto px-6 mb-8">
         <form onSubmit={handleSubmit} className="relative">
           <input
+            name="search"
             type="search"
             placeholder="Search for movies, TV shows, people..."
-            value={inputValue}
-            onChange={handleSearchChange}
+            defaultValue={searchParams.get("q") || ""}
             className="w-full px-6 py-4 pr-12 bg-gray-800/80 text-white rounded-lg border border-gray-700 focus:border-primary-2 focus:outline-none focus:ring-2 focus:ring-primary-2/20 transition-all duration-300 text-lg"
             autoComplete="off"
           />

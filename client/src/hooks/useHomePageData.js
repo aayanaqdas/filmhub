@@ -19,9 +19,9 @@ export const useHomePageData = () => {
         ]);
 
         setData({
-          trending: trending.results.filter(item => item.media_type !== 'person'),
-          topRatedTv: topRatedTv.results,
-          popularPeople: popularPeople.results,
+          trending: trending.data.results.filter((item) => item.media_type !== "person"),
+          topRatedTv: topRatedTv.data.results,
+          popularPeople: popularPeople.data.results,
         });
       } catch (err) {
         setError(err.message);
