@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { tmdbApi } from "../services/tmdbApi";
+import { api } from "../services/api";
 
 export const useInfoPageData = (mediaType, id) => {
   const [data, setData] = useState(null);
@@ -10,7 +10,7 @@ export const useInfoPageData = (mediaType, id) => {
     const fetchMediaDetails = async () => {
       try {
         setLoading(true);
-        const mediaDetails = await tmdbApi.getMediaDetails(mediaType, id);
+        const mediaDetails = await api.getMediaDetails(mediaType, id);
 
         setData(mediaDetails.data);
       } catch (err) {

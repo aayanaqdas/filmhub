@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { tmdbApi } from "../services/tmdbApi";
+import { api } from "../services/api";
 
 export const useSearchData = (query, page) => {
   const [data, setData] = useState([]);
@@ -33,7 +33,7 @@ export const useSearchData = (query, page) => {
       try {
         setLoading(true);
         setError(null);
-        const response = await tmdbApi.searchMulti(query, page);
+        const response = await api.searchMulti(query, page);
 
         if (page === 1) {
           setData(response.data); // Replace data for new search

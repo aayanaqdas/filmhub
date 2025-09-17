@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { tmdbApi } from "../services/tmdbApi";
+import { api } from "../services/api";
 
 export const useCarouselData = () => {
   const [carouselItems, setCarouselItems] = useState([]);
@@ -10,7 +10,7 @@ export const useCarouselData = () => {
     const fetchCarouselData = async () => {
       try {
         setLoading(true);
-        const mediaWithDetails = await tmdbApi.getHomepageCarousel();
+        const mediaWithDetails = await api.getHomepageCarousel();
         setCarouselItems(mediaWithDetails);
       } catch (err) {
         setError(err.message);

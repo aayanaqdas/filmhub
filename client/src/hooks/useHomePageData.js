@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { tmdbApi } from "../services/tmdbApi";
+import { api } from "../services/api";
 
 export const useHomePageData = () => {
   const [data, setData] = useState({
@@ -13,9 +13,9 @@ export const useHomePageData = () => {
       try {
         setLoading(true);
         const [trending, topRatedTv, popularPeople] = await Promise.all([
-          tmdbApi.getTrending(),
-          tmdbApi.getTopRatedTv(),
-          tmdbApi.getPopularPeople(),
+          api.getTrending(),
+          api.getTopRatedTv(),
+          api.getPopularPeople(),
         ]);
 
         setData({

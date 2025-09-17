@@ -1,10 +1,14 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8080/api";
+const serverHost = import.meta.env.VITE_SERVER_HOST;
+const baseUrl = `${serverHost}/api`;
+
+const userRegion = localStorage.getItem("region") || "US"
 
 const apiCall = async (endpoint) => {
   try {
-    const response = await axios.get(`${baseUrl}${endpoint}`);
+    const separator = endpoint.includes("?") ? "&" : "?";
+    const response = await axios.get(`${baseUrl}${endpoint}${separator}region=${userRegion}`);
     return response.data;
   } catch (error) {
     console.error("API Error:", error);
@@ -12,7 +16,7 @@ const apiCall = async (endpoint) => {
   }
 };
 
-export const tmdbApi = {
+export const api = {
   getHomepageCarousel: () => apiCall("/homepage/carousel"),
   getTrending: (timeWindow = "week") => apiCall(`/trending/all?time_window=${timeWindow}`),
 

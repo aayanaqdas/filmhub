@@ -5,7 +5,7 @@ export default function HeroSlide({ item, isActive }) {
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = baseImgUrl + item.backdrop_path;
   const userRegion = JSON.parse(localStorage.getItem("region"));
-  const releaseYear =
+  let releaseYear =
     item.media_type === "movie"
       ? item.release_date?.slice(0, 4) || "N/A"
       : item.first_air_date?.slice(0, 4) || "N/A";
@@ -32,6 +32,10 @@ export default function HeroSlide({ item, isActive }) {
 
     if (release && release.release_dates.length > 0) {
       certification = release.release_dates[0].certification || "NR";
+
+      // release year based on region
+      const releaseDate = release.release_dates[0].release_date;
+      releaseYear = releaseDate ? releaseDate.slice(0, 4) : "N/A";
     } else {
       // Fallback to any other country with certification
       for (const result of item.release_dates?.results || []) {
@@ -42,6 +46,7 @@ export default function HeroSlide({ item, isActive }) {
       }
     }
   } else {
+    // rating is age certification for tv series
     const rating = item.content_ratings?.results?.find(
       (result) => result.iso_3166_1 === userRegion
     );

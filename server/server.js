@@ -5,8 +5,10 @@ const axios = require("axios");
 const app = express();
 const cors = require("cors");
 
+const clientHost = process.env.CLIENT_HOST;
+
 const corsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173", clientHost],
 };
 
 const apiKey = process.env.TMDB_API_KEY;
@@ -14,7 +16,7 @@ const tmdbBaseUrl = "https://api.themoviedb.org/3";
 
 app.use(cors(corsOptions));
 
-// Homepage trending data (combined)
+// Homepage trending data
 app.get("/api/homepage/carousel", async (req, res) => {
   try {
     const [movies, tv] = await Promise.all([

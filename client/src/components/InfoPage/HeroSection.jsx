@@ -10,12 +10,13 @@ export default function HeroSection({ data, mediaType, onWatchNowClick }) {
     );
   }
 
+  const userRegion = JSON.parse(localStorage.getItem("region")) || "US";
+
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = data.backdrop_path ? baseImgUrl + data.backdrop_path : noImg;
-
   const title = data.title || data.name || "Unknown Title";
   const releaseDate = data.release_date || data.first_air_date;
-  const releaseYear = releaseDate ? releaseDate.slice(0, 4) : "N/A";
+  let releaseYear = releaseDate ? releaseDate.slice(0, 4) : "N/A";
 
   const runtimeHour = data.runtime && data.runtime > 60 ? Math.floor(data.runtime / 60) : 0;
   const runtimeMinute = data.runtime && data.runtime > 60 ? data.runtime % 60 : data.runtime || 0;
@@ -39,10 +40,14 @@ export default function HeroSection({ data, mediaType, onWatchNowClick }) {
   let certification = "NR";
 
   if (mediaType === "movie") {
-    const usRelease = data.release_dates?.results?.find((result) => result.iso_3166_1 === "US");
+    const release = data.release_dates?.results?.find((result) => result.iso_3166_1 === userRegion);
 
-    if (usRelease && usRelease.release_dates.length > 0) {
-      certification = usRelease.release_dates[0].certification || "NR";
+    if (release && release.release_dates.length > 0) {
+      certification = release.release_dates[0].certification || "NR";
+
+      // release year based on user region
+      const releaseDate = release.release_dates[0].release_date;
+      releaseYear = releaseDate ? releaseDate.slice(0, 4) : "N/A";
     } else {
       // Fallback to any other country with certification
       for (const result of data.release_dates?.results || []) {
@@ -53,10 +58,13 @@ export default function HeroSection({ data, mediaType, onWatchNowClick }) {
       }
     }
   } else {
-    const usRating = data.content_ratings?.results?.find((result) => result.iso_3166_1 === "US");
+    // rating is a age certification for TV series
+    const rating = data.content_ratings?.results?.find(
+      (result) => result.iso_3166_1 === userRegion
+    );
 
-    if (usRating && usRating.rating) {
-      certification = usRating.rating;
+    if (rating && rating.rating) {
+      certification = rating.rating;
     } else {
       // Fallback to any other country with rating
       for (const result of data.content_ratings?.results || []) {
