@@ -1,7 +1,7 @@
 import StarRating from "../StarRating";
 import noImg from "../../assets/no_image.svg";
 
-export default function HeroSection({ data, mediaType, onWatchNowClick }) {
+export default function HeroSection({ data, mediaType, onWatchNowClick, openVideoModal }) {
   if (!data) {
     return (
       <div className="w-full h-[70vh] bg-gray-800 animate-pulse flex items-center justify-center">
@@ -132,7 +132,10 @@ export default function HeroSection({ data, mediaType, onWatchNowClick }) {
                 <span>Watch Now</span>
               </button>
 
-              <button className="bg-white/20 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-colors duration-200 backdrop-blur-sm border border-white/30 cursor-pointer">
+              <button
+                onClick={openVideoModal}
+                className="bg-white/20 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-colors duration-200 backdrop-blur-sm border border-white/30 cursor-pointer"
+              >
                 Trailer
               </button>
             </div>
@@ -192,7 +195,10 @@ export default function HeroSection({ data, mediaType, onWatchNowClick }) {
             <span>Watch Now</span>
           </button>
 
-          <button className="bg-white/20 text-white w-full px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-colors duration-200 backdrop-blur-sm border border-white/30 cursor-pointer">
+          <button
+            onClick={openVideoModal}
+            className="bg-white/20 text-white w-full px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-colors duration-200 backdrop-blur-sm border border-white/30 cursor-pointer"
+          >
             Trailer
           </button>
         </div>

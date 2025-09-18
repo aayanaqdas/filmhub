@@ -2,15 +2,20 @@ import CardSection from "../components/CardSections/CardSection";
 import HeroSection from "../components/InfoPage/HeroSection";
 import PersonInfo from "../components/InfoPage/PersonInfo";
 import WatchProviderSection from "../components/InfoPage/WatchProviders";
+import VideoModal from "../components/InfoPage/VideoModal";
 import { useInfoPageData } from "../hooks/useInfoPageData";
 import { useParams } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function InfoPage() {
   const { mediaType, id } = useParams();
   const { data, loading, error } = useInfoPageData(mediaType, id);
   const watchNowRef = useRef(null);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   console.log(data);
+
+  const openVideoModal = () => setIsVideoModalOpen(true);
+  const closeVideoModal = () => setIsVideoModalOpen(false);
 
   const userRegion = JSON.parse(localStorage.getItem("region")) || "US";
 
@@ -52,10 +57,18 @@ export default function InfoPage() {
   }
 
   const watchProviders = data["watch/providers"]?.results?.[userRegion] || null;
+  const trailer =
+    data.videos?.results?.find((video) => video.type === "Trailer" && video.site === "YouTube") ||
+    data.videos?.results?.find((video) => video.site === "YouTube"); // Fallback to any YouTube video if no trailer
 
   return (
     <div className="w-full h-full flex flex-col items-center">
-      <HeroSection data={data} mediaType={mediaType} onWatchNowClick={scrollToWatchNow} />
+      <HeroSection
+        data={data}
+        mediaType={mediaType}
+        onWatchNowClick={scrollToWatchNow}
+        openVideoModal={openVideoModal}
+      />
 
       {/* Content */}
       <div className="w-full max-w-7xl mx-auto">
@@ -107,6 +120,7 @@ export default function InfoPage() {
           <CardSection sectionTitle={"Similar"} data={data.similar.results} mediaType={mediaType} />
         )}
       </div>
+      {isVideoModalOpen && <VideoModal closeVideoModal={closeVideoModal} videoObj={trailer} />}
     </div>
   );
 }
