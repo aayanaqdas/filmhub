@@ -2,7 +2,14 @@ import Cards from "./Cards";
 import NavigationButton from "../NavigationButton";
 import { useRef } from "react";
 
-export default function CardSection({ sectionTitle, data, mediaType }) {
+export default function CardSection({
+  sectionTitle,
+  data,
+  mediaType,
+  timeWindow,
+  hasFilterButton,
+  onTimeWindowChange,
+}) {
   const scrollContainerRef = useRef(null);
 
   const scrollLeft = () => {
@@ -30,15 +37,17 @@ export default function CardSection({ sectionTitle, data, mediaType }) {
 
   // Render person cards (for cast members)
   if (mediaType === "person") {
-    const personCards = data?.map(person => {
-      return <Cards 
-        key={person.id}
-        id={person.id}
-        mediaType={"person"}
-        posterPath={person.profile_path}
-        title={person.name}
-        character={person.character}
-      />
+    const personCards = data?.map((person) => {
+      return (
+        <Cards
+          key={person.id}
+          id={person.id}
+          mediaType={"person"}
+          posterPath={person.profile_path}
+          title={person.name}
+          character={person.character}
+        />
+      );
     });
 
     return (
@@ -76,7 +85,33 @@ export default function CardSection({ sectionTitle, data, mediaType }) {
 
   return (
     <section className="w-full pt-5 relative">
-      <h1 className="text-primary-2 text-2xl md:text-3xl font-bold mb-4 px-7">{sectionTitle}</h1>
+      <div className="flex items-center gap-5 px-7 mb-4">
+        <h1 className="text-primary-2 text-2xl md:text-3xl font-bold">{sectionTitle}</h1>
+        {hasFilterButton && (
+          <div className="flex border-1 border-primary-2 rounded-full p-1">
+            <button
+              onClick={() => onTimeWindowChange("day")}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer ${
+                timeWindow === "day"
+                  ? "bg-primary-2 text-black"
+                  : "text-primary-2 hover:bg-primary-2/10"
+              }`}
+            >
+              Today
+            </button>
+            <button
+              onClick={() => onTimeWindowChange("week")}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer ${
+                timeWindow === "week"
+                  ? "bg-primary-2 text-black"
+                  : "text-primary-2 hover:bg-primary-2/10"
+              }`}
+            >
+              This Week
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className="relative">
         <NavigationButton direction="prev" onClick={scrollLeft} variant="section" />

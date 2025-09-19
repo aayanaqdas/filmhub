@@ -1,9 +1,15 @@
 import HeroCarousel from "../components/HeroCarousel/HeroCarousel";
 import CardSection from "../components/CardSections/CardSection";
+import { useState } from "react";
 import { useHomePageData } from "../hooks/useHomePageData";
 
 export default function HomePage() {
-  const { data, loading, error } = useHomePageData();
+  const [timeWindow, setTimeWindow] = useState("week");
+  const { data, loading, error } = useHomePageData(timeWindow);
+
+  const handleTimeWindowChange = (newTimeWindow) => {
+    setTimeWindow(newTimeWindow);
+  };
 
   if (loading) {
     return (
@@ -44,7 +50,14 @@ export default function HomePage() {
     <main className="pt-12">
       <HeroCarousel />
       <div className="w-full flex flex-col items-center">
-        <CardSection sectionTitle="Trending this week" data={data.trending} mediaType="all" />
+        <CardSection 
+          sectionTitle="Trending" 
+          data={data.trending} 
+          mediaType="all" 
+          timeWindow={timeWindow} 
+          hasFilterButton={true}
+          onTimeWindowChange={handleTimeWindowChange}
+        />
         <CardSection sectionTitle="Top rated TV-Shows" data={data.topRatedTv} mediaType="tv" />
         <CardSection sectionTitle="Popular people" data={data.popularPeople} mediaType="person" />
       </div>

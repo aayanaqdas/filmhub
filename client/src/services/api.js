@@ -18,7 +18,7 @@ const apiCall = async (endpoint) => {
 
 export const api = {
   getHomepageCarousel: () => apiCall("/homepage/carousel"),
-  getTrending: (timeWindow = "week") => apiCall(`/trending/all?time_window=${timeWindow}`),
+  getTrending: (timeWindow) => apiCall(`/trending/all?time_window=${timeWindow}`),
 
   // Popular content
   getPopularPeople: () => apiCall(`/popular/person`),

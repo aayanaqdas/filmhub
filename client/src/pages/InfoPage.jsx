@@ -111,13 +111,19 @@ export default function InfoPage() {
         )}
         {data?.recommendations?.results && data.recommendations.results.length > 0 && (
           <CardSection
-            sectionTitle={"Recommended"}
+            sectionTitle={"You may also like"}
             data={data.recommendations.results}
             mediaType={mediaType}
           />
         )}
         {data?.similar?.results && data.similar.results.length > 0 && (
-          <CardSection sectionTitle={"Similar"} data={data.similar.results} mediaType={mediaType} />
+          <CardSection
+            sectionTitle={`${mediaType === "movie" ? "Movies" : "Shows"} similar to ${
+              data.title || data.name
+            }`}
+            data={data.similar.results}
+            mediaType={mediaType}
+          />
         )}
       </div>
       {isVideoModalOpen && <VideoModal closeVideoModal={closeVideoModal} videoObj={trailer} />}

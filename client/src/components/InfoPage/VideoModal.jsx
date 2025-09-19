@@ -34,7 +34,7 @@ export default function VideoModal({ closeVideoModal, videoObj }) {
       className="fixed inset-0 bg-background/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
     >
-      <div className="relative w-full max-w-5xl mx-auto bg- rounded-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+      <div className="relative w-full max-w-5xl mx-auto rounded-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
         {/* Header with title and close button */}
         <div className="flex items-center justify-between p-4 bg-gray-900">
           <h2 className="text-white text-lg md:text-xl font-semibold truncate pr-4">

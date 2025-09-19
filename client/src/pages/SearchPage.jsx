@@ -168,7 +168,7 @@ export default function SearchPage() {
 
   return (
     <div className="w-full flex flex-col items-center pt-20 pb-20">
-      <div className="w-full max-w-4xl mx-auto px-6 mb-8">
+      <div className="w-full max-w-7xl mx-auto px-6 mb-8">
         <form onSubmit={handleSubmit} className="relative">
           <input
             name="search"

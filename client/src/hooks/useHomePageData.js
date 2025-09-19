@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 
-export const useHomePageData = () => {
+export const useHomePageData = (timeWindow) => {
   const [data, setData] = useState({
     trending: [],
   });
@@ -13,7 +13,7 @@ export const useHomePageData = () => {
       try {
         setLoading(true);
         const [trending, topRatedTv, popularPeople] = await Promise.all([
-          api.getTrending(),
+          api.getTrending(timeWindow),
           api.getTopRatedTv(),
           api.getPopularPeople(),
         ]);
@@ -31,7 +31,7 @@ export const useHomePageData = () => {
     };
 
     fetchAllData();
-  }, []);
+  }, [timeWindow]);
 
   return { data, loading, error };
 };
