@@ -3,7 +3,15 @@ import StarRating from "../StarRating";
 import noImg from "../../assets/no_image.svg";
 import noImgPerson from "../../assets/no_person_img.svg";
 
-export default function Cards({ id, title, mediaType, posterPath, voteAverage, character }) {
+export default function Cards({
+  id,
+  title,
+  mediaType,
+  posterPath,
+  voteAverage,
+  character,
+  epCount,
+}) {
   const navigate = useNavigate();
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const maxLength = 25;
@@ -12,6 +20,34 @@ export default function Cards({ id, title, mediaType, posterPath, voteAverage, c
     const path = `/${mediaType}/${id}`;
     navigate(path);
   };
+
+  if (mediaType === "season") {
+    return (
+      <div
+        className="flex items-start min-w-70 bg-gray-800/50 hover:bg-gray-700/50 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-primary-2/20 border border-gray-600/30 hover:border-primary-2/60 cursor-pointer"
+        onClick={handleCardClick}
+      >
+        <div className="w-16 h-24 sm:w-20 sm:h-30 md:w-24 md:h-36 flex-shrink-0 rounded-lg overflow-hidden shadow-lg border border-gray-600/50">
+          <img
+            src={posterPath ? `${baseImgUrl}${posterPath}` : noImg}
+            alt={title}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+        <div className="ml-4 flex-1 py-4">
+          <h3 className="text-white text-lg md:text-xl font-bold leading-tight mb-3 drop-shadow-lg">
+            {truncatedTitle}
+          </h3>
+          <div className="inline-flex items-center px-3 py-1 bg-gray-700/50 rounded-full border border-gray-600/50">
+            <span className="text-primary-2 text-sm font-semibold">
+              {epCount > 0 ? epCount : "TBA"}
+            </span>
+            <span className="text-gray-300 text-xs ml-1">episodes</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (mediaType === "person") {
     return (
@@ -66,7 +102,7 @@ export default function Cards({ id, title, mediaType, posterPath, voteAverage, c
         </h3>
 
         <div className="scale-75 sm:scale-90 md:scale-100 lg:scale-110 xl:scale-125 origin-left">
-          <StarRating voteAverage={voteAverage} />
+          <StarRating voteAverage={voteAverage || null} />
         </div>
       </div>
     </div>

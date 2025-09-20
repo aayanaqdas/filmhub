@@ -35,6 +35,39 @@ export default function CardSection({
     return null;
   }
 
+  if (mediaType === "season") {
+    const seasonCards = data?.map((season) => {
+      return (
+        <Cards
+          key={season.id}
+          id={season.id}
+          mediaType={"season"}
+          posterPath={season.poster_path}
+          title={season.name}
+          epCount={season.episode_count}
+        />
+      );
+    });
+
+    return (
+      <section className="w-full pt-5 relative">
+        <h1 className="text-primary-2 text-2xl md:text-3xl font-bold mb-4 px-7">{sectionTitle}</h1>
+
+        <div className="relative">
+          <NavigationButton direction="prev" onClick={scrollLeft} variant="section" />
+          <NavigationButton direction="next" onClick={scrollRight} variant="section" />
+
+          <div
+            ref={scrollContainerRef}
+            className="w-full flex gap-4 overflow-x-auto overflow-y-hidden pb-2 hide-scrollbar px-7 scroll-smooth"
+          >
+            {seasonCards}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   // Render person cards (for cast members)
   if (mediaType === "person") {
     const personCards = data?.map((person) => {

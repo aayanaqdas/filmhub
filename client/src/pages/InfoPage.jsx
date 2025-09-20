@@ -56,6 +56,7 @@ export default function InfoPage() {
     return <PersonInfo data={data} loading={loading} error={error} />;
   }
 
+
   const watchProviders = data["watch/providers"]?.results?.[userRegion] || null;
   const trailer =
     data.videos?.results?.find((video) => video.type === "Trailer" && video.site === "YouTube") ||
@@ -70,8 +71,10 @@ export default function InfoPage() {
         openVideoModal={openVideoModal}
       />
 
+
       {/* Content */}
       <div className="w-full max-w-7xl mx-auto">
+        {data.seasons && <CardSection sectionTitle={`${data.seasons.length} seasons`} data={[...data.seasons].reverse()} mediaType={"season"}/>}
         <div className="px-6">
           <div className="pt-5">
             <h1 className="text-white text-2xl md:text-3xl font-bold mb-4">
