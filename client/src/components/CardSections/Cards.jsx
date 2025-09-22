@@ -11,38 +11,72 @@ export default function Cards({
   voteAverage,
   character,
   epCount,
+  releaseDate,
+  seriesId,
+  seasonNum,
 }) {
   const navigate = useNavigate();
-  const baseImgUrl = `https://image.tmdb.org/t/p/original`;
+  const baseImgUrl = "https://image.tmdb.org/t/p/original";
+
   const maxLength = 25;
   const truncatedTitle = title?.length > maxLength ? title?.substring(0, maxLength) + "..." : title;
-  const handleCardClick = () => {
-    const path = `/${mediaType}/${id}`;
-    navigate(path);
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    try {
+      return new Date(dateString).toLocaleDateString("en-GB", {
+        day: "numeric",
+        year: "numeric",
+        month: "long",
+      });
+    } catch {
+      return null;
+    }
   };
 
+  const formattedDate = formatDate(releaseDate);
+
+  const handleCardClick = () => {
+    if (mediaType === "season") {
+      navigate(`/tv/${seriesId}/season/${seasonNum}`);
+    } else {
+      navigate(`/${mediaType}/${id}`);
+    }
+  };
   if (mediaType === "season") {
     return (
       <div
-        className="flex items-start min-w-70 bg-gray-800/50 hover:bg-gray-700/50 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-primary-2/20 border border-gray-600/30 hover:border-primary-2/60 cursor-pointer"
+        className="group flex items-start min-w-76 md:min-w-100 bg-gray-800/50 hover:text-gray-700/50 rounded-2xl transition-all duration-500 hover:shadow-2xl hover:shadow-primary-2/30 border border-gray-600/40 hover:border-primary-2/70 cursor-pointer backdrop-blur-sm"
         onClick={handleCardClick}
       >
-        <div className="w-16 h-24 sm:w-20 sm:h-30 md:w-24 md:h-36 flex-shrink-0 rounded-lg overflow-hidden shadow-lg border border-gray-600/50">
+        <div className="w-20 h-28 sm:w-24 sm:h-36 md:w-28 md:h-40 flex-shrink-0 rounded-xl overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-200">
           <img
             src={posterPath ? `${baseImgUrl}${posterPath}` : noImg}
             alt={title}
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover"
           />
         </div>
-        <div className="ml-4 flex-1 py-4">
-          <h3 className="text-white text-lg md:text-xl font-bold leading-tight mb-3 drop-shadow-lg">
-            {truncatedTitle}
-          </h3>
-          <div className="inline-flex items-center px-3 py-1 bg-gray-700/50 rounded-full border border-gray-600/50">
-            <span className="text-primary-2 text-sm font-semibold">
-              {epCount > 0 ? epCount : "TBA"}
-            </span>
-            <span className="text-gray-300 text-xs ml-1">episodes</span>
+
+        <div className="px-4 py-2 flex-1 space-y-3">
+          <div>
+            <h3 className="text-white text-xl md:text-2xl font-bold leading-tight mb-2 drop-shadow-lg group-hover:text-primary-2 transition-colors duration-300">
+              {truncatedTitle}
+            </h3>
+            {formattedDate ? (
+              <p className="text-primary/80 text-sm font-medium">Premiered {formattedDate}</p>
+            ) : (
+              <p className="text-primary/80 text-sm font-medium">To be announced</p>
+            )}
+          </div>
+
+          <div className="flex items-center">
+            {epCount > 0 && (
+              <div className="flex items-center px-2 py-1 md:px-4 md:py-2 bg-gradient-to-r from-primary-2/20 to-primary/20 rounded-full border border-primary-2/30 group-hover:border-primary-2/60 transition-all duration-300">
+                <span className="text-primary-2 text-sm font-bold">
+                  {epCount > 0 ? epCount : "TBA"}
+                </span>
+                <span className="text-gray-300 text-xs ml-2 font-medium">episodes</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import CardSection from "../components/CardSections/CardSection";
 import HeroSection from "../components/InfoPage/HeroSection";
 import PersonInfo from "../components/InfoPage/PersonInfo";
+import SeasonInfoPage from "../components/InfoPage/SeasonInfoPage";
 import WatchProviderSection from "../components/InfoPage/WatchProviders";
 import VideoModal from "../components/InfoPage/VideoModal";
 import { useInfoPageData } from "../hooks/useInfoPageData";
@@ -8,8 +9,8 @@ import { useParams } from "react-router-dom";
 import { useRef, useState } from "react";
 
 export default function InfoPage() {
-  const { mediaType, id } = useParams();
-  const { data, loading, error } = useInfoPageData(mediaType, id);
+  const { mediaType, id, seasonNumber } = useParams();
+  const { data, loading, error } = useInfoPageData(mediaType, id, seasonNumber);
   const watchNowRef = useRef(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   console.log(data);
@@ -56,6 +57,9 @@ export default function InfoPage() {
     return <PersonInfo data={data} loading={loading} error={error} />;
   }
 
+  if (seasonNumber) {
+    return <SeasonInfoPage data={data} loading={loading} error={error}/>
+  }
 
   const watchProviders = data["watch/providers"]?.results?.[userRegion] || null;
   const trailer =
@@ -71,10 +75,19 @@ export default function InfoPage() {
         openVideoModal={openVideoModal}
       />
 
-
       {/* Content */}
-      <div className="w-full max-w-7xl mx-auto">
-        {data.seasons && <CardSection sectionTitle={`${data.seasons.length} seasons`} data={[...data.seasons].reverse()} mediaType={"season"}/>}
+      <div className="w-full mx-auto max-w-[1440px]">
+        {data.seasons && (
+          <CardSection
+            sectionTitle={`${data.number_of_seasons} season${
+              data.number_of_seasons > 1 ? "s" : ""
+            }`}
+            data={[...data.seasons].reverse()}
+            mediaType={"season"}
+            mediaId={data.id}
+          />
+        )}
+
         <div className="px-6">
           <div className="pt-5">
             <h1 className="text-white text-2xl md:text-3xl font-bold mb-4">
@@ -112,6 +125,7 @@ export default function InfoPage() {
             mediaType={"person"}
           />
         )}
+
         {data?.recommendations?.results && data.recommendations.results.length > 0 && (
           <CardSection
             sectionTitle={"You may also like"}

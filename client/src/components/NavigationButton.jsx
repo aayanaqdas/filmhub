@@ -4,14 +4,14 @@ export default function NavigationButton({ direction, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`absolute top-0 bottom-0 w-16 z-30 opacity-0 cursor-pointer hover:opacity-100 transition-opacity duration-300 ${
+      className={`absolute top-0 bottom-0 w-16 z-30 cursor-pointer transition-all duration-300 ${
         isPrev
           ? "left-0 bg-gradient-to-r from-background/80 via-background/50 to-transparent"
           : "right-0 bg-gradient-to-l from-background/80 via-background/50 to-transparent"
       } flex items-center justify-center text-white group`}
     >
       <svg
-        className="w-6 h-6 group-hover:scale-110 transition-transform duration-200"
+        className="w-6 h-6 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

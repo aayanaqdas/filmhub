@@ -108,8 +108,8 @@ app.get("/api/details/:mediaType/:id", async (req, res) => {
 
     const appendToResponse =
       mediaType === "movie"
-        ? "images,release_dates,credits,videos,similar,recommendations,watch/providers,"
-        : "images,content_ratings,credits,videos,similar,recommendations,watch/providers";
+        ? "images,release_dates,credits,videos,similar,recommendations,watch/providers,reviews"
+        : "images,content_ratings,credits,videos,similar,recommendations,watch/providers,reviews";
 
     const url = `${tmdbBaseUrl}/${mediaType}/${id}?api_key=${apiKey}&append_to_response=${appendToResponse},${
       mediaType === "person" ? "combined_credits" : "credits"
@@ -120,6 +120,22 @@ app.get("/api/details/:mediaType/:id", async (req, res) => {
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     res.status(500).json({ message: "Error fetching media details" });
+  }
+});
+
+app.get("/api/details/tv/:id/season/:seasonNumber", async (req, res) => {
+  try {
+    const { id, seasonNumber } = req.params;
+
+    const appendToResponse = "images,aggregate_credits,videos,watch/providers";
+
+    const url = `${tmdbBaseUrl}/tv/${id}/season/${seasonNumber}?api_key=${apiKey}&append_to_response=${appendToResponse}`;
+
+    const response = await axios.get(url);
+    res.status(200).json({ data: response.data });
+  } catch (err) {
+    console.error("Error:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error fetching season details" });
   }
 });
 

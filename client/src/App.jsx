@@ -10,6 +10,7 @@ export default function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/:mediaType/:id/season/:seasonNumber" element={<InfoPage />} />
         <Route path="/:mediaType/:id" element={<InfoPage />} />
         <Route path="/search" element={<SearchPage />} />
       </Routes>

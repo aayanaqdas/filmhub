@@ -5,6 +5,7 @@ import { useRef } from "react";
 export default function CardSection({
   sectionTitle,
   data,
+  mediaId,
   mediaType,
   timeWindow,
   hasFilterButton,
@@ -45,6 +46,9 @@ export default function CardSection({
           posterPath={season.poster_path}
           title={season.name}
           epCount={season.episode_count}
+          releaseDate={season.air_date}
+          seriesId={mediaId}
+          seasonNum={season.season_number}
         />
       );
     });

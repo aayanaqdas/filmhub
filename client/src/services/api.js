@@ -3,7 +3,7 @@ import axios from "axios";
 const serverHost = import.meta.env.VITE_SERVER_HOST;
 const baseUrl = `${serverHost}/api`;
 
-const userRegion = localStorage.getItem("region") || "US"
+const userRegion = localStorage.getItem("region") || "US";
 
 const apiCall = async (endpoint) => {
   try {
@@ -28,6 +28,8 @@ export const api = {
 
   // Media details
   getMediaDetails: (mediaType, id) => apiCall(`/details/${mediaType}/${id}`),
+  getSeasonDetails: (mediaType, id, seasonNumber) =>
+    apiCall(`/details/${mediaType}/${id}/season/${seasonNumber}`),
 
   // Search
   searchMulti: (query, page = 1) => apiCall(`/search/${encodeURIComponent(query)}?page=${page}`),
