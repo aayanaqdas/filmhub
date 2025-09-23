@@ -58,7 +58,7 @@ export default function InfoPage() {
   }
 
   if (seasonNumber) {
-    return <SeasonInfoPage data={data} loading={loading} error={error}/>
+    return <SeasonInfoPage data={data} loading={loading} error={error} />;
   }
 
   const watchProviders = data["watch/providers"]?.results?.[userRegion] || null;
