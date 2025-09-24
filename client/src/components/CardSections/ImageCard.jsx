@@ -4,13 +4,41 @@ export default function ImageCard({ image, onImageClick }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const baseImgUrl = "https://image.tmdb.org/t/p/w500";
 
+  const imageType = image.imageType || (image.width > image.height ? "backdrop" : "poster");
+
+  // Get appropriate card width
+  const getCardWidth = () => {
+    switch (imageType) {
+      case "poster":
+        return "w-40";
+      case "logo":
+        return "w-64";
+      case "backdrop":
+      default:
+        return "w-72";
+    }
+  };
+
+  // Get appropriate aspect ratio
+  const getAspectRatio = () => {
+    switch (imageType) {
+      case "poster":
+        return "aspect-[2/3]";
+      case "logo":
+        return "aspect-[3/1]";
+      case "backdrop":
+      default:
+        return "aspect-video";
+    }
+  };
+
   return (
     <div
-      className="flex-shrink-0 w-80 bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-600/30 hover:border-primary-2/50 hover:shadow-lg hover:shadow-primary-2/10 transition-all duration-300 group cursor-pointer"
+      className={`flex-shrink-0 ${getCardWidth()}  bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-600/30 hover:border-primary-2/50 hover:shadow-lg hover:shadow-primary-2/10 transition-all duration-300 group cursor-pointer`}
       onClick={() => onImageClick(image)}
     >
       {/* Image Container */}
-      <div className="aspect-video bg-gray-700 relative overflow-hidden">
+      <div className={`${getAspectRatio()} bg-gray-700 relative overflow-hidden`}>
         <img
           src={`${baseImgUrl}${image.file_path}`}
           alt="Movie/TV Image"
@@ -59,7 +87,7 @@ export default function ImageCard({ image, onImageClick }) {
       {/* Image Info */}
       <div className="p-4">
         <div className="flex items-center justify-between text-xs text-gray-400">
-          <span className="capitalize">{image.width > image.height ? "Backdrop" : "Poster"}</span>
+          <span className="capitalize">{imageType}</span>
           <span className="text-primary-2 font-medium">
             {((image.width * image.height) / 1000000).toFixed(1)}MP
           </span>

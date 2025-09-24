@@ -148,12 +148,12 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
             </span>
           </h2>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2"> 
             <span className="text-gray-400 text-sm">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer text-gray-300 focus:outline-none hover:bg-gray-700/50 hover:text-white border border-gray-600/50 hover:border-gray-500"
+              className="bg-gray-800 border border-gray-600 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-primary-2 transition-colors cursor-pointer"
             >
               <option value="air_date">Release date</option>
               <option value="rating">Rating</option>
