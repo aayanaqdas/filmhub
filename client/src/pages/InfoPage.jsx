@@ -6,6 +6,7 @@ import WatchProviderSection from "../components/InfoPage/WatchProviders";
 import VideoModal from "../components/InfoPage/VideoModal";
 import ImageModal from "../components/InfoPage/ImageModal";
 import MediaGalleryFilters from "../components/InfoPage/MediaGalleryFilters";
+import ReviewsSection from "../components/InfoPage/ReviewsSection";
 import { useInfoPageData } from "../hooks/useInfoPageData";
 import { useParams } from "react-router-dom";
 import { useRef, useState } from "react";
@@ -89,7 +90,7 @@ export default function InfoPage() {
     data.videos?.results?.find((video) => video.site === "YouTube"); // Fallback to any YouTube video if no trailer
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
+    <div className="w-full h-full flex flex-col items-center mb-10">
       <HeroSection
         data={data}
         mediaType={mediaType}
@@ -171,6 +172,9 @@ export default function InfoPage() {
             mediaType={mediaType}
           />
         )}
+
+        {/* Reviews Section */}
+        {data?.reviews?.results.length > 0 && <ReviewsSection data={data?.reviews} />}
       </div>
       {isVideoModalOpen && (
         <VideoModal closeVideoModal={closeVideoModal} videoObj={selectedVideo} />
