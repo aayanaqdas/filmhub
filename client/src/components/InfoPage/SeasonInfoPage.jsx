@@ -3,8 +3,15 @@ import { useNavigate } from "react-router-dom";
 import noImg from "../../assets/no_image.svg";
 import EpisodeCard from "./EpisodeCards";
 import WatchProviderSection from "./WatchProviders";
+import MediaGalleryFilters from "./MediaGalleryFilters";
+import ImageModal from "./ImageModal";
+import VideoModal from "./VideoModal";
 
 export default function SeasonInfoPage({ data, loading, error, showId, showTitle }) {
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const [expandedEpisode, setExpandedEpisode] = useState(null);
   const [sortBy, setSortBy] = useState("episode");
   const navigate = useNavigate();
@@ -54,6 +61,26 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
       </div>
     );
   }
+
+  const openVideoModal = (video) => {
+    setSelectedVideo(video);
+    setIsVideoModalOpen(true);
+  };
+
+  const closeVideoModal = () => {
+    setIsVideoModalOpen(false);
+    setSelectedVideo(null);
+  };
+
+  const openImageModal = (image) => {
+    setSelectedImage(image);
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
+    setSelectedImage(null);
+  };
 
   const sortedEpisodes = sortEpisodes(data.episodes);
 
@@ -136,6 +163,12 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
 
       {/* Watch Providers */}
       <WatchProviderSection watchProviders={watchProviders} />
+      <MediaGalleryFilters
+        images={data.images}
+        videos={data.videos}
+        onImageClick={openImageModal}
+        onVideoClick={openVideoModal}
+      />
 
       {/* Episodes Section */}
       <div className="mt-8">
@@ -148,7 +181,7 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
             </span>
           </h2>
 
-          <div className="flex items-center gap-2"> 
+          <div className="flex items-center gap-2">
             <span className="text-gray-400 text-sm">Sort by:</span>
             <select
               value={sortBy}
@@ -173,6 +206,13 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
           ))}
         </div>
       </div>
+      {isVideoModalOpen && (
+        <VideoModal closeVideoModal={closeVideoModal} videoObj={selectedVideo} />
+      )}
+
+      {isImageModalOpen && selectedImage && (
+        <ImageModal closeImageModal={closeImageModal} imageObj={selectedImage} />
+      )}
     </div>
   );
 }
