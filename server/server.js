@@ -127,7 +127,7 @@ app.get("/api/details/tv/:id/season/:seasonNumber", async (req, res) => {
   try {
     const { id, seasonNumber } = req.params;
 
-    const appendToResponse = "images,aggregate_credits,videos,watch/providers";
+    const appendToResponse = "images,aggregate_credits,videos,watch/providers"
 
     const url = `${tmdbBaseUrl}/tv/${id}/season/${seasonNumber}?api_key=${apiKey}&append_to_response=${appendToResponse}`;
 

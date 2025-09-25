@@ -122,7 +122,7 @@ export default function HeroSlide({ item, isActive }) {
       style={{
         flex: "0 0 95%",
         backgroundImage: `url(${backDropUrl})`,
-        backgroundPosition: "center top 30%",
+        backgroundPosition: "center 30%",
         backgroundSize: "cover",
       }}
     >

@@ -84,7 +84,7 @@ export default function HeroSection({ data, mediaType, onWatchNowClick, openVide
           src={backDropUrl}
           alt={title}
           className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ objectPosition: "center top 30%" }}
+          style={{ objectPosition: "center 30%" }}
         />
 
         {/* Gradients */}

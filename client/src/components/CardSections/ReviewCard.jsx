@@ -62,7 +62,9 @@ export default function ReviewCard({ review }) {
 
           {/* Author Info */}
           <div>
-            <h3 className="text-white font-semibold text-lg">{displayName}</h3>
+            <h3 className="text-white font-semibold text-lg truncate max-w-[200px] block">
+              {displayName}
+            </h3>
             <p className="text-primary-2 text-sm">{formatDate(review.created_at)}</p>
             {/* Rating - show below name/date on mobile */}
             {rating && (

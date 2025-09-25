@@ -89,6 +89,38 @@ export default function InfoPage() {
     data.videos?.results?.find((video) => video.type === "Trailer" && video.site === "YouTube") ||
     data.videos?.results?.find((video) => video.site === "YouTube"); // Fallback to any YouTube video if no trailer
 
+  const MovieCollection = () => {
+    if (!data.belongs_to_collection) return null;
+    const handleViewCollection = () => {
+      // navigate(`/collection/${data.belongs_to_collection.id}`);
+    };
+
+    return (
+      <div className="relative w-full my-10 rounded-xl shadow-lg">
+        <img
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          src={"https://image.tmdb.org/t/p/original" + data.belongs_to_collection.backdrop_path}
+          alt={`Backdrop for ${data.belongs_to_collection.name} collection`}
+          style={{ objectPosition: "center 30%" }}
+        />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-background/60 z-0" />
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-start justify-center gap-3 h-48 md:h-64 px-8 py-8">
+          <h3 className="text-white text-2xl md:text-4xl font-bold mb-2">
+            Part of the {data.belongs_to_collection.name}
+          </h3>
+          <button
+            className="bg-primary text-white px-3 py-1 rounded-lg hover:bg-primary/90 transition-colors duration-200 cursor-pointer"
+            onClick={handleViewCollection}
+          >
+            View the collection
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="w-full h-full flex flex-col items-center mb-10">
       <HeroSection
@@ -155,6 +187,8 @@ export default function InfoPage() {
           onImageClick={openImageModal}
           onVideoClick={openVideoModal}
         />
+
+        <MovieCollection />
 
         {data?.recommendations?.results && data.recommendations.results.length > 0 && (
           <CardSection
