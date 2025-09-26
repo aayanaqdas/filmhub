@@ -19,6 +19,11 @@ export default function MediaGalleryFilters({ images, videos, onImageClick, onVi
       allImages.push(...images.logos.map((img) => ({ ...img, imageType: "logo" })));
     }
 
+    // For person info page
+    if (images?.profiles?.length > 0) {
+      allImages.push(...images.profiles.map((img) => ({ ...img, imageType: "profiles" })));
+    }
+
     // Sort by vote_average first, then by resolution
     const sortedImages = allImages.sort((a, b) => {
       if (a.vote_average && b.vote_average && a.vote_average !== b.vote_average) {
@@ -80,10 +85,12 @@ export default function MediaGalleryFilters({ images, videos, onImageClick, onVi
     all:
       (images?.backdrops?.length || 0) +
       (images?.posters?.length || 0) +
-      (images?.logos?.length || 0),
+      (images?.logos?.length || 0) +
+      (images?.profiles?.length || 0),
     backdrop: images?.backdrops?.length || 0,
     poster: images?.posters?.length || 0,
     logo: images?.logos?.length || 0,
+    profiles: images?.profiles?.length || 0,
   };
 
   const videoCounts = {

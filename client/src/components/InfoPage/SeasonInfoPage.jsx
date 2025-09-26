@@ -85,84 +85,86 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
   const sortedEpisodes = sortEpisodes(data.episodes);
 
   return (
-    <div className="max-w-7xl mx-auto mt-16 sm:mt-20 p-6">
-      {/* Back Button */}
-      <button
-        onClick={handleGoBack}
-        className="flex items-center gap-2 text-primary hover:text-primary-2 transition-colors mb-6 group cursor-pointer"
-      >
-        <svg
-          className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+    <div className="max-w-7xl mx-auto mt-16 sm:mt-20 ">
+      <div className="px-6">
+        {/* Back Button */}
+        <button
+          onClick={handleGoBack}
+          className="flex items-center gap-2 text-primary hover:text-primary-2 transition-colors mb-6 group cursor-pointer"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          <svg
+            className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          <span className="font-medium text-sm">
+            {showTitle ? `Back to ${showTitle}` : "Back to show"}
+          </span>
+        </button>
+
+        {/* Season Header */}
+        <div className="flex flex-row gap-6 mb-6">
+          <img
+            src={data.poster_path ? `https://image.tmdb.org/t/p/w500${data.poster_path}` : noImg}
+            className="w-20 h-28 sm:w-24 sm:h-32 rounded-lg object-cover mx-auto sm:mx-0 flex-shrink-0"
+            alt={data.name}
           />
-        </svg>
-        <span className="font-medium text-sm">
-          {showTitle ? `Back to ${showTitle}` : "Back to show"}
-        </span>
-      </button>
 
-      {/* Season Header */}
-      <div className="flex flex-row gap-6 mb-6">
-        <img
-          src={data.poster_path ? `https://image.tmdb.org/t/p/w500${data.poster_path}` : noImg}
-          className="w-20 h-28 sm:w-24 sm:h-32 rounded-lg object-cover mx-auto sm:mx-0 flex-shrink-0"
-          alt={data.name}
-        />
-
-        <div className="flex-1 text-left">
-          <div className=" flex items-center gap-4 mb-3">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">
-              {data.name}
-            </h1>
-            <span className="text-gray-400">({new Date(data.air_date).getFullYear()})</span>
-          </div>
-
-          {/* Stats */}
-          <div className="flex flex-wrap justify-start gap-4 text-sm">
-            <div className="text-left">
-              <span className="text-gray-400 block">Episodes</span>
-              <span className="text-white font-medium">{data.episodes?.length || 0}</span>
+          <div className="flex-1 text-left">
+            <div className=" flex items-center gap-4 mb-3">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">
+                {data.name}
+              </h1>
+              <span className="text-gray-400">({new Date(data.air_date).getFullYear()})</span>
             </div>
 
-            <div className="text-center sm:text-left">
-              <span className="text-gray-400 block">First Aired</span>
-              <span className="text-white font-medium">
-                {new Date(data.air_date).toLocaleDateString("en-GB", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
-
-            {data.vote_average > 0 && (
-              <div className="text-center sm:text-left">
-                <span className="text-gray-400 block">Rating</span>
-                <div className="flex items-center justify-center sm:justify-start gap-1">
-                  <span className="text-yellow-400">★</span>
-                  <span className="text-white font-medium">{data.vote_average.toFixed(1)}</span>
-                </div>
+            {/* Stats */}
+            <div className="flex flex-wrap justify-start gap-4 text-sm">
+              <div className="text-left">
+                <span className="text-gray-400 block">Episodes</span>
+                <span className="text-white font-medium">{data.episodes?.length || 0}</span>
               </div>
-            )}
+
+              <div className="text-center sm:text-left">
+                <span className="text-gray-400 block">First Aired</span>
+                <span className="text-white font-medium">
+                  {new Date(data.air_date).toLocaleDateString("en-GB", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+
+              {data.vote_average > 0 && (
+                <div className="text-center sm:text-left">
+                  <span className="text-gray-400 block">Rating</span>
+                  <div className="flex items-center justify-center sm:justify-start gap-1">
+                    <span className="text-yellow-400">★</span>
+                    <span className="text-white font-medium">{data.vote_average.toFixed(1)}</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+        {/* Overview */}
+        {data.overview && (
+          <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">{data.overview}</p>
+        )}
+
+        {/* Watch Providers */}
+        <WatchProviderSection watchProviders={watchProviders} />
       </div>
 
-      {/* Overview */}
-      {data.overview && (
-        <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">{data.overview}</p>
-      )}
-
-      {/* Watch Providers */}
-      <WatchProviderSection watchProviders={watchProviders} />
       <MediaGalleryFilters
         images={data.images}
         videos={data.videos}
@@ -171,7 +173,7 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
       />
 
       {/* Episodes Section */}
-      <div className="mt-8">
+      <div className="mt-8 px-6">
         {/* Header with Sort */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <h2 className="flex items-center gap-2 text-2xl md:text-3xl font-bold text-white">
@@ -195,7 +197,7 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
         </div>
 
         {/* Episodes List */}
-        <div className="space-y-2">
+        <div className="space-y-4">
           {sortedEpisodes.map((episode) => (
             <EpisodeCard
               key={episode.id}

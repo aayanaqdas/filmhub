@@ -80,18 +80,20 @@ export default function HeroSection({ data, mediaType, onWatchNowClick, openVide
     <>
       {/* Desktop Layout */}
       <div className="hidden md:block relative h-[70vh] w-full overflow-hidden">
-        <img
-          src={backDropUrl}
-          alt={title}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ objectPosition: "center 30%" }}
-        />
+        {/* Backdrop image */}
+        <div className="absolute right-0 top-0 h-full w-[90%]">
+          <img
+            src={backDropUrl}
+            alt={title}
+            className="w-full h-full object-cover object-center"
+            style={{ objectPosition: "center 30%" }}
+          />
+          {/* Gradients */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent"></div>
+        </div>
 
-        {/* Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent"></div>
-
-        <div className="relative z-10 flex items-center h-full px-12 lg:px-16">
+        <div className="relative z-10 flex items-center h-full max-w-[1440px] mx-auto px-6 ">
           <div className="max-w-2xl text-white">
             {logoPath ? (
               <img

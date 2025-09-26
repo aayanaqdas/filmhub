@@ -2,13 +2,14 @@ import CardSection from "../components/CardSections/CardSection";
 import HeroSection from "../components/InfoPage/HeroSection";
 import PersonInfo from "../components/InfoPage/PersonInfo";
 import SeasonInfoPage from "../components/InfoPage/SeasonInfoPage";
+import CollectionPage from "../components/InfoPage/CollectionPage";
 import WatchProviderSection from "../components/InfoPage/WatchProviders";
 import VideoModal from "../components/InfoPage/VideoModal";
 import ImageModal from "../components/InfoPage/ImageModal";
 import MediaGalleryFilters from "../components/InfoPage/MediaGalleryFilters";
 import ReviewsSection from "../components/InfoPage/ReviewsSection";
 import { useInfoPageData } from "../hooks/useInfoPageData";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 
 export default function InfoPage() {
@@ -21,6 +22,7 @@ export default function InfoPage() {
   const [selectedVideo, setSelectedVideo] = useState(null);
 
   const userRegion = JSON.parse(localStorage.getItem("region")) || "US";
+  const navigate = useNavigate();
 
   if (!data) {
     return (
@@ -84,15 +86,19 @@ export default function InfoPage() {
     return <SeasonInfoPage data={data} loading={loading} error={error} />;
   }
 
+  if (mediaType === "collection") {
+    return <CollectionPage data={data} loading={loading} error={error} />;
+  }
+
   const watchProviders = data["watch/providers"]?.results?.[userRegion] || null;
   const trailer =
     data.videos?.results?.find((video) => video.type === "Trailer" && video.site === "YouTube") ||
     data.videos?.results?.find((video) => video.site === "YouTube"); // Fallback to any YouTube video if no trailer
 
-  const MovieCollection = () => {
+  const MovieCollectionSection = () => {
     if (!data.belongs_to_collection) return null;
     const handleViewCollection = () => {
-      // navigate(`/collection/${data.belongs_to_collection.id}`);
+      navigate(`/collection/${data.belongs_to_collection.id}`);
     };
 
     return (
@@ -180,7 +186,6 @@ export default function InfoPage() {
             mediaType={"person"}
           />
         )}
-
         <MediaGalleryFilters
           images={data.images}
           videos={data.videos}
@@ -188,7 +193,11 @@ export default function InfoPage() {
           onVideoClick={openVideoModal}
         />
 
-        <MovieCollection />
+        {data?.belongs_to_collection && (
+          <div className="lg:px-6">
+            <MovieCollectionSection />
+          </div>
+        )}
 
         {data?.recommendations?.results && data.recommendations.results.length > 0 && (
           <CardSection

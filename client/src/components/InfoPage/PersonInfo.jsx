@@ -1,9 +1,13 @@
 import { useState } from "react";
 import CardSection from "../CardSections/CardSection";
+import MediaGalleryFilters from "./MediaGalleryFilters";
+import ImageModal from "./ImageModal";
 import noImg from "../../assets/no_image.svg";
 
 export default function PersonInfo({ data, loading, error }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const faceImgUrl = "https://image.tmdb.org/t/p/w300_and_h300_face";
 
   if (loading) {
@@ -23,6 +27,17 @@ export default function PersonInfo({ data, loading, error }) {
       </div>
     );
   }
+
+  const openImageModal = (image) => {
+    setSelectedImage(image);
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
+    setSelectedImage(null);
+  };
+
   const calculateAge = (birthday) => {
     const birthDate = new Date(birthday);
     const today = new Date();
@@ -85,9 +100,9 @@ export default function PersonInfo({ data, loading, error }) {
 
   return (
     <div className="w-full min-h-screen pt-20">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto ">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row gap-8 mb-12">
+        <div className="flex flex-col lg:flex-row gap-8 mb-12 px-6">
           {/* Profile Image */}
           <div className="flex-shrink-0">
             <img
@@ -159,7 +174,7 @@ export default function PersonInfo({ data, loading, error }) {
 
         {/* Biography Section */}
         {data.biography && (
-          <div className="mb-12">
+          <div className="mb-12 px-6">
             <h2 className="text-white text-2xl md:text-3xl font-bold mb-6">Biography</h2>
             <div className="p-6">
               <p className="text-primary-2 text-sm md:text-base leading-relaxed whitespace-pre-line">
@@ -176,6 +191,8 @@ export default function PersonInfo({ data, loading, error }) {
             </div>
           </div>
         )}
+
+        <MediaGalleryFilters images={data.images} onImageClick={openImageModal} />
 
         {/* Filmography Sections */}
         {data.combined_credits && (
@@ -200,6 +217,9 @@ export default function PersonInfo({ data, loading, error }) {
           </>
         )}
       </div>
+      {isImageModalOpen && selectedImage && (
+        <ImageModal closeImageModal={closeImageModal} imageObj={selectedImage} />
+      )}
     </div>
   );
 }
