@@ -33,4 +33,7 @@ export const api = {
 
   // Search
   searchMulti: (query, page = 1) => apiCall(`/search/${encodeURIComponent(query)}?page=${page}`),
+
+
+  getMovies: (mediaType) => apiCall(`/discover/${mediaType}`)
 };

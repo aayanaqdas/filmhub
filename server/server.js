@@ -127,7 +127,7 @@ app.get("/api/details/tv/:id/season/:seasonNumber", async (req, res) => {
   try {
     const { id, seasonNumber } = req.params;
 
-    const appendToResponse = "images,aggregate_credits,videos,watch/providers"
+    const appendToResponse = "images,aggregate_credits,videos,watch/providers";
 
     const url = `${tmdbBaseUrl}/tv/${id}/season/${seasonNumber}?api_key=${apiKey}&append_to_response=${appendToResponse}`;
 
@@ -154,6 +154,20 @@ app.get("/api/search/:query", async (req, res) => {
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     res.status(500).json({ message: "Error fetching search results" });
+  }
+});
+
+app.get("/api/discover/:mediaType", async (req, res) => {
+  try {
+    const { mediaType } = req.params;
+
+    const filters =
+      "include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
+    const response = await axios.get(`${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}`);
+    res.status(200).json({ data: response.data });
+  } catch (err) {
+    console.error("Error:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error fetching discover results" });
   }
 });
 

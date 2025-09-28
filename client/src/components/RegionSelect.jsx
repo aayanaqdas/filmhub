@@ -157,13 +157,17 @@ export default function RegionSelect() {
     <>
       <button
         onClick={openModal}
-        className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer text-gray-300 hover:bg-gray-700/50 hover:text-white border border-gray-600/50 hover:border-gray-500"
+        className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg overflow-hidden transition-all duration-200 whitespace-nowrap cursor-pointer text-gray-300 hover:bg-gray-700/50 hover:text-white border border-gray-600/50 hover:border-gray-500"
       >
-        <span className="text-base">{currentCountry?.flag}</span>
-        <span className="hidden sm:block">{currentCountry?.english_name}</span>
-        <span className="sm:hidden">{currentCountry?.iso_3166_1}</span>
+        <span className="min-w-0 flex items-center gap-1 mr-2 truncate">
+          <span className="text-base flex-shrink-0">{currentCountry?.flag}</span>
+          <span className="hidden sm:block">{currentCountry?.english_name}</span>
+          <span className="sm:hidden">{currentCountry?.iso_3166_1}</span>
+        </span>
         <svg
-          className={`w-3 h-3 transition-transform duration-200 ${isShown ? "rotate-180" : ""}`}
+          className={`w-3 h-3 ml-auto flex-shrink-0 transition-transform duration-200 ${
+            isShown ? "rotate-180" : ""
+          }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
