@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { countries } from "../countries";
 
 export default function RegionSelect() {
   const [isShown, setIsShown] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState(localStorage.getItem("region") || "US");
   const [searchQuery, setSearchQuery] = useState("");
+  const [countries, setCountries] = useState([]);
 
+  // Dynamically import countries data
+  useEffect(() => {
+    let isMounted = true;
+    import("../countries").then((mod) => {
+      if (isMounted) setCountries(mod.countries);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   const currentCountry = countries.find((country) => country.iso_3166_1 === selectedRegion);
 
   const filteredCountries = countries.filter(

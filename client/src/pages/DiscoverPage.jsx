@@ -2,9 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useDiscoverPageData } from "../hooks/useDiscoverPageData";
 import Cards from "../components/CardSections/Cards";
-import { movieProviders } from "../movieProviders";
-import { tvProviders } from "../tvProviders";
-import { movieGenres, tvGenres } from "../genres";
 import FilterBtns from "../components/DiscoverPages/FilterBtns";
 import SortFilter from "../components/DiscoverPages/SortFilter";
 import WhereToWatchFilter from "../components/DiscoverPages/ProvidersFilter";
@@ -38,7 +35,9 @@ export default function DiscoverPage() {
     where: false,
     filters: false,
   });
+  const [watchProviders, setWatchProviders] = useState([]);
   const { mediaType } = useParams();
+
   // Reset genres and providers when mediaType changes
   useEffect(() => {
     setFilters((prev) => ({
@@ -56,7 +55,25 @@ export default function DiscoverPage() {
   const { data, loading, error } = useDiscoverPageData(mediaType, appliedFilters);
 
   const region = localStorage.getItem("region") || "US";
-  const watchProviders = mediaType === "movie" ? movieProviders : tvProviders;
+
+  // Dynamically import providers based on mediaType
+  useEffect(() => {
+    let isMounted = true;
+    async function loadProviders() {
+      if (mediaType === "movie") {
+        const { movieProviders } = await import("../movieProviders");
+        if (isMounted) setWatchProviders(movieProviders);
+      } else {
+        const { tvProviders } = await import("../tvProviders");
+        if (isMounted) setWatchProviders(tvProviders);
+      }
+    }
+    loadProviders();
+    return () => {
+      isMounted = false;
+    };
+  }, [mediaType]);
+
   const providersForCountry = useMemo(
     () =>
       watchProviders.filter(
@@ -65,7 +82,6 @@ export default function DiscoverPage() {
       ),
     [watchProviders, region]
   );
-
   const cards = useMemo(
     () =>
       data?.map((media) => (
@@ -87,8 +103,6 @@ export default function DiscoverPage() {
   const handleShowResults = () => {
     setAppliedFilters(filters);
   };
-
-  const genres = mediaType === "movie" ? movieGenres : tvGenres;
 
   if (!data || loading) {
     return (
@@ -135,7 +149,7 @@ export default function DiscoverPage() {
           expanded={expanded.filters}
           onClick={() => setExpanded((prev) => ({ ...prev, filters: !prev.filters }))}
         >
-          <GenreFilter filters={filters} setFilters={setFilters} genres={genres} />
+          <GenreFilter filters={filters} setFilters={setFilters} mediaType={mediaType} />
           <div className="mt-4">
             <ReleaseDates filters={filters} setFilters={setFilters} />
           </div>

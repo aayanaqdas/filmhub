@@ -1,4 +1,7 @@
-export default function GenreFilter({ filters, setFilters, genres }) {
+import { movieGenres, tvGenres } from "../../genres";
+
+export default function GenreFilter({ filters, setFilters, mediaType }) {
+  const genres = mediaType === "movie" ? movieGenres : tvGenres;
   return (
     <div>
       <label className="block font-medium text-primary-2 mb-2">Genres</label>
