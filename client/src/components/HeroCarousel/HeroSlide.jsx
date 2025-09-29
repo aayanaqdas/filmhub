@@ -4,7 +4,7 @@ export default function HeroSlide({ item, isActive }) {
   const navigate = useNavigate();
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = baseImgUrl + item.backdrop_path;
-  const userRegion = JSON.parse(localStorage.getItem("region"));
+  const userRegion = localStorage.getItem("region") || "US";
   let releaseYear =
     item.media_type === "movie"
       ? item.release_date?.slice(0, 4) || "N/A"

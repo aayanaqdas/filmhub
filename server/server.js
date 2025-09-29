@@ -160,10 +160,10 @@ app.get("/api/search/:query", async (req, res) => {
 app.get("/api/discover/:mediaType", async (req, res) => {
   try {
     const { mediaType } = req.params;
+    const query = new URLSearchParams(req.query).toString();
 
-    const filters =
-      "include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
-    const response = await axios.get(`${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}`);
+    const url = `${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}&${query}`;
+    const response = await axios.get(url);
     res.status(200).json({ data: response.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 
-export const useMoviePageData = (mediaType) => {
+export const useMoviePageData = (mediaType, filters) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ export const useMoviePageData = (mediaType) => {
     const fetchMovies = async () => {
       try {
         setLoading(true);
-        const movies = await api.getMovies(mediaType);
+        const movies = await api.getMovies(mediaType, filters);
         setData(movies.data.results);
       } catch (err) {
         setError(err.message);
@@ -22,7 +22,7 @@ export const useMoviePageData = (mediaType) => {
     if (mediaType) {
       fetchMovies();
     }
-  }, [mediaType]);
+  }, [mediaType, filters]);
 
   return { data, loading, error };
 };

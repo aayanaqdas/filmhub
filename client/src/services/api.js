@@ -34,6 +34,28 @@ export const api = {
   // Search
   searchMulti: (query, page = 1) => apiCall(`/search/${encodeURIComponent(query)}?page=${page}`),
 
+  getMovies: (mediaType, filters = {}) => {
+    const params = new URLSearchParams();
 
-  getMovies: (mediaType) => apiCall(`/discover/${mediaType}`)
+    if (filters.sortBy) {
+      params.append("sort_by", filters.sortBy);
+    }
+    if (filters.providers && filters.providers.length > 0) {
+      params.append("watch_region", userRegion);
+      params.append("with_watch_providers", filters.providers.join(","));
+    }
+    if (filters.genres && filters.genres.length > 0) {
+      params.append("with_genres", filters.genres.join(","));
+    }
+    if (filters.dateFrom) {
+      params.append("primary_release_date.gte", filters.dateFrom);
+    }
+    if (filters.dateTo) {
+      params.append("primary_release_date.lte", filters.dateTo);
+    }
+
+    const query = params.toString() ? `?${params.toString()}` : "";
+    console.log(query)
+    return apiCall(`/discover/${mediaType}${query}`);
+  },
 };

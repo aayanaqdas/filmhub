@@ -16,7 +16,7 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
   const [sortBy, setSortBy] = useState("episode");
   const navigate = useNavigate();
 
-  const userRegion = JSON.parse(localStorage.getItem("region")) || "US";
+  const userRegion = localStorage.getItem("region") || "US";
   const watchProviders = data["watch/providers"]?.results?.[userRegion] || null;
 
   const toggleEpisode = (episodeId) => {

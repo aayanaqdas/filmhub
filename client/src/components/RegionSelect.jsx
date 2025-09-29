@@ -4,9 +4,7 @@ import { countries } from "../countries";
 
 export default function RegionSelect() {
   const [isShown, setIsShown] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState(
-    JSON.parse(localStorage.getItem("region")) || "US"
-  );
+  const [selectedRegion, setSelectedRegion] = useState(localStorage.getItem("region") || "US");
   const [searchQuery, setSearchQuery] = useState("");
 
   const currentCountry = countries.find((country) => country.iso_3166_1 === selectedRegion);
@@ -24,7 +22,7 @@ export default function RegionSelect() {
   const selectCountry = (countryCode) => {
     document.body.classList.remove("lock-scrollbar");
     setSelectedRegion(countryCode);
-    localStorage.setItem("region", JSON.stringify(countryCode));
+    localStorage.setItem("region", countryCode);
     setIsShown(false);
     setSearchQuery("");
 

@@ -8,6 +8,7 @@ import VideoModal from "../components/InfoPage/VideoModal";
 import ImageModal from "../components/InfoPage/ImageModal";
 import MediaGalleryFilters from "../components/InfoPage/MediaGalleryFilters";
 import ReviewsSection from "../components/InfoPage/ReviewsSection";
+import noImg from "../assets/no_image.svg";
 import { useInfoPageData } from "../hooks/useInfoPageData";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
@@ -21,7 +22,7 @@ export default function InfoPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
-  const userRegion = JSON.parse(localStorage.getItem("region")) || "US";
+  const userRegion = localStorage.getItem("region") || "US";
   const navigate = useNavigate();
 
   if (!data) {
@@ -105,7 +106,11 @@ export default function InfoPage() {
       <div className="relative w-full my-10 rounded-xl shadow-lg">
         <img
           className="absolute inset-0 w-full h-full object-cover object-center"
-          src={"https://image.tmdb.org/t/p/original" + data.belongs_to_collection.backdrop_path}
+          src={
+            data.belongs_to_collection.backdrop_path
+              ? `https://image.tmdb.org/t/p/original${data.belongs_to_collection.backdrop_path}`
+              : noImg
+          }
           alt={`Backdrop for ${data.belongs_to_collection.name} collection`}
           style={{ objectPosition: "center 30%" }}
         />

@@ -128,7 +128,7 @@ export default function Cards({
         </span>
       )}
       {/* Gradient overlay for better text visibility */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-5"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
 
       <div className="relative w-full h-full py-0.5 px-2 sm:px-3 md:px-4 flex flex-col justify-end z-10">
         <h3 className="text-white text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-bold leading-tight drop-shadow-lg">

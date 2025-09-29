@@ -10,7 +10,7 @@ export default function HeroSection({ data, mediaType, onWatchNowClick, openVide
     );
   }
 
-  const userRegion = JSON.parse(localStorage.getItem("region")) || "US";
+  const userRegion = localStorage.getItem("region") || "US";
 
   const baseImgUrl = `https://image.tmdb.org/t/p/original`;
   const backDropUrl = data.backdrop_path ? baseImgUrl + data.backdrop_path : noImg;
