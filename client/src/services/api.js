@@ -42,10 +42,10 @@ export const api = {
     }
     if (filters.providers && filters.providers.length > 0) {
       params.append("watch_region", userRegion);
-      params.append("with_watch_providers", filters.providers.join(","));
+      params.append("with_watch_providers", filters.providers.join("|"));
     }
     if (filters.genres && filters.genres.length > 0) {
-      params.append("with_genres", filters.genres.join(","));
+      params.append("with_genres", filters.genres.join("|"));
     }
     if (filters.dateFrom) {
       params.append("primary_release_date.gte", filters.dateFrom);
@@ -55,7 +55,7 @@ export const api = {
     }
 
     const query = params.toString() ? `?${params.toString()}` : "";
-    console.log(query)
+    console.log(query);
     return apiCall(`/discover/${mediaType}${query}`);
   },
 };
