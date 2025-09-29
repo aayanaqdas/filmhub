@@ -34,7 +34,7 @@ export const api = {
   // Search
   searchMulti: (query, page = 1) => apiCall(`/search/${encodeURIComponent(query)}?page=${page}`),
 
-  getMovies: (mediaType, filters = {}) => {
+  getDiscoverMedia: (mediaType, filters = {}) => {
     const params = new URLSearchParams();
 
     if (filters.sortBy) {

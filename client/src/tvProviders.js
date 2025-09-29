@@ -1,4 +1,4 @@
-export const watchProviders = [
+export const tvProviders = [
   {
     display_priorities: {
       AE: 1,

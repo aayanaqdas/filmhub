@@ -11,7 +11,7 @@ export default function ReleaseDates({ filters, setFilters }) {
       <label className="block font-medium text-primary-2 mb-2">Release Dates</label>
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-primary-2 text-left w-16">From</span>
+          <span className="text-sm text-primary-2 text-left w-16">From</span>
           <DatePicker
             selected={fromDate}
             onChange={(date) =>
@@ -21,14 +21,14 @@ export default function ReleaseDates({ filters, setFilters }) {
               }))
             }
             dateFormat="dd-MM-yyyy"
-            className="w-40 px-3 py-2 text-sm rounded-lg cursor-pointer text-gray-300 bg-gray-800 border border-gray-600 focus:outline-none"
+            className="w-40 px-3 py-2 text-base rounded-lg cursor-pointer text-gray-300 bg-gray-800 border border-gray-600 focus:outline-none"
             placeholderText="Select date"
             maxDate={toDate}
             isClearable
           />
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-xs text-primary-2 text-left w-16">To</span>
+          <span className="text-sm text-primary-2 text-left w-16">To</span>
           <DatePicker
             selected={toDate}
             onChange={(date) =>

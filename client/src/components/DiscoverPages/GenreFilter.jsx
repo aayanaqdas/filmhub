@@ -1,11 +1,9 @@
-import { movieGenres } from "../../genres";
-
-export default function GenreFilter({ filters, setFilters }) {
+export default function GenreFilter({ filters, setFilters, genres }) {
   return (
     <div>
       <label className="block font-medium text-primary-2 mb-2">Genres</label>
       <div className="flex flex-wrap gap-2">
-        {movieGenres.map((genre) => {
+        {genres.map((genre) => {
           const isActive = filters.genres.includes(genre.id);
           return (
             <button

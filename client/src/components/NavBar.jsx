@@ -14,8 +14,8 @@ export default function NavBar() {
 
   const navItems = [
     { name: "HOME", icon: homeIcon, path: "/" },
-    { name: "MOVIES", icon: filmIcon, path: "/movies" },
-    { name: "SERIES", icon: tvIcon, path: "/series" },
+    { name: "MOVIES", icon: filmIcon, path: "/movie" },
+    { name: "SERIES", icon: tvIcon, path: "/tv" },
     { name: "SEARCH", icon: searchIcon, path: "/search" },
   ];
 
@@ -38,9 +38,9 @@ export default function NavBar() {
 
     if (currentPath === "/") {
       setActiveTab("HOME");
-    } else if (currentPath.startsWith("/movies") || currentPath.startsWith("/movie/")) {
+    } else if (currentPath.startsWith("/movie") || currentPath.startsWith("/movie/")) {
       setActiveTab("MOVIES");
-    } else if (currentPath.startsWith("/series") || currentPath.startsWith("/tv/")) {
+    } else if (currentPath.startsWith("/tv") || currentPath.startsWith("/tv/")) {
       setActiveTab("SERIES");
     } else if (currentPath.startsWith("/search")) {
       setActiveTab("SEARCH");

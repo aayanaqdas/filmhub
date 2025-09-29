@@ -1,14 +1,28 @@
-export default function SortFilter({ filters, setFilters }) {
-  const sortOptions = [
+export default function SortFilter({ filters, setFilters, mediaType }) {
+  const movieSortOptions = [
     { value: "popularity.desc", label: "Popularity Descending" },
     { value: "popularity.asc", label: "Popularity Ascending" },
     { value: "vote_average.desc", label: "Rating Descending" },
     { value: "vote_average.asc", label: "Rating Ascending" },
     { value: "primary_release_date.desc", label: "Release Date Descending" },
     { value: "primary_release_date.asc", label: "Release Date Ascending" },
-    { value: "title.asc", label: "Title A-Z Ascending" },
-    { value: "title.desc", label: "Title Z-A Descending" },
+    { value: "title.asc", label: "Title A-Z" },
+    { value: "title.desc", label: "Title Z-A" },
   ];
+
+  const tvSortOptions = [
+    { value: "popularity.desc", label: "Popularity Descending" },
+    { value: "popularity.asc", label: "Popularity Ascending" },
+    { value: "vote_average.desc", label: "Rating Descending" },
+    { value: "vote_average.asc", label: "Rating Ascending" },
+    { value: "first_air_date.desc", label: "First Air Date Descending" },
+    { value: "first_air_date.asc", label: "First Air Date Ascending" },
+    { value: "name.asc", label: "Name A-Z" },
+    { value: "name.desc", label: "Name Z-A" },
+  ];
+
+  const sortOptions = mediaType === "tv" ? tvSortOptions : movieSortOptions;
+
   return (
     <div>
       <label className="block font-medium text-primary-2 mb-2">Sort By</label>

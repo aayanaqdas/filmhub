@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 
-export const useMoviePageData = (mediaType, filters) => {
+export const useDiscoverPageData = (mediaType, filters) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchMedia = async () => {
       try {
         setLoading(true);
-        const movies = await api.getMovies(mediaType, filters);
-        setData(movies.data.results);
+        const media = await api.getDiscoverMedia(mediaType, filters);
+        setData(media.data.results);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -20,7 +20,7 @@ export const useMoviePageData = (mediaType, filters) => {
     };
 
     if (mediaType) {
-      fetchMovies();
+      fetchMedia();
     }
   }, [mediaType, filters]);
 

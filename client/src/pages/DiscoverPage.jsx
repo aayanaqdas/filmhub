@@ -1,14 +1,30 @@
-import { useState, useMemo } from "react";
-import { useMoviePageData } from "../hooks/useMoviesPageData";
+import { useState, useEffect, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import { useDiscoverPageData } from "../hooks/useDiscoverPageData";
 import Cards from "../components/CardSections/Cards";
-import { watchProviders } from "../movieProviders";
+import { movieProviders } from "../movieProviders";
+import { tvProviders } from "../tvProviders";
+import { movieGenres, tvGenres } from "../genres";
 import FilterBtns from "../components/DiscoverPages/FilterBtns";
 import SortFilter from "../components/DiscoverPages/SortFilter";
 import WhereToWatchFilter from "../components/DiscoverPages/ProvidersFilter";
 import GenreFilter from "../components/DiscoverPages/GenreFilter";
 import ReleaseDates from "../components/DiscoverPages/ReleaseDateFilter";
 
-export default function MoviesPage() {
+// Helper to compare filters
+function areFiltersEqual(a, b) {
+  return (
+    a.sortBy === b.sortBy &&
+    a.dateFrom === b.dateFrom &&
+    a.dateTo === b.dateTo &&
+    a.providers.length === b.providers.length &&
+    a.providers.every((id, i) => b.providers[i] === id) &&
+    a.genres.length === b.genres.length &&
+    a.genres.every((id, i) => b.genres[i] === id)
+  );
+}
+
+export default function DiscoverPage() {
   const [filters, setFilters] = useState({
     providers: [],
     genres: [],
@@ -20,36 +36,59 @@ export default function MoviesPage() {
   const [expanded, setExpanded] = useState({
     sort: false,
     where: false,
-    filters: true,
+    filters: false,
   });
+  const { mediaType } = useParams();
+  // Reset genres and providers when mediaType changes
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      providers: [],
+      genres: [],
+    }));
+    setAppliedFilters((prev) => ({
+      ...prev,
+      providers: [],
+      genres: [],
+    }));
+  }, [mediaType]);
 
-  const { data, loading, error } = useMoviePageData("movie", appliedFilters);
+  const { data, loading, error } = useDiscoverPageData(mediaType, appliedFilters);
 
   const region = localStorage.getItem("region") || "US";
+  const watchProviders = mediaType === "movie" ? movieProviders : tvProviders;
   const providersForCountry = useMemo(
     () =>
       watchProviders.filter(
         (provider) =>
           provider.display_priorities && provider.display_priorities[region] !== undefined
       ),
-    [region]
+    [watchProviders, region]
   );
+
   const cards = useMemo(
     () =>
       data?.map((media) => (
         <Cards
           key={media.id}
           id={media.id}
-          mediaType={"movie"}
+          mediaType={mediaType}
           posterPath={media.poster_path}
           title={media.title ? media.title : media.name}
           voteAverage={media.vote_average}
         />
       )),
-    [data]
+    [data, mediaType]
   );
 
-  const handleShowResults = () => setAppliedFilters(filters);
+  // Check if filters have changed
+  const filtersChanged = !areFiltersEqual(filters, appliedFilters);
+
+  const handleShowResults = () => {
+    setAppliedFilters(filters);
+  };
+
+  const genres = mediaType === "movie" ? movieGenres : tvGenres;
 
   if (!data || loading) {
     return (
@@ -78,7 +117,7 @@ export default function MoviesPage() {
           expanded={expanded.sort}
           onClick={() => setExpanded((prev) => ({ ...prev, sort: !prev.sort }))}
         >
-          <SortFilter filters={filters} setFilters={setFilters} />
+          <SortFilter filters={filters} setFilters={setFilters} mediaType={mediaType} />
         </FilterBtns>
         <FilterBtns
           title="Where to watch"
@@ -96,23 +135,26 @@ export default function MoviesPage() {
           expanded={expanded.filters}
           onClick={() => setExpanded((prev) => ({ ...prev, filters: !prev.filters }))}
         >
-          <GenreFilter filters={filters} setFilters={setFilters} />
+          <GenreFilter filters={filters} setFilters={setFilters} genres={genres} />
           <div className="mt-4">
             <ReleaseDates filters={filters} setFilters={setFilters} />
           </div>
         </FilterBtns>
-        <button
-          className="w-full text-primary-2 bg-primary rounded-lg py-3 cursor-pointer hover:bg-primary/80"
-          onClick={handleShowResults}
-        >
-          Show Results
-        </button>
       </aside>
       {/* Main Content */}
       <section className="flex-1 p-8 justify-center">
         <h1 className="font-bold text-3xl text-white mb-8 tracking-wide">Discover Movies</h1>
         <div className="flex flex-wrap gap-8">{cards}</div>
       </section>
+      {/* Show results button only visible if a new filter is applied */}
+      {filtersChanged && (
+        <button
+          className="w-full fixed bottom-0 left-1/2 -translate-x-1/2 z-50 bg-primary text-primary-2 font-semibold px-8 py-4 shadow-lg transition-all hover:brightness-80 cursor-pointer"
+          onClick={handleShowResults}
+        >
+          Show Results
+        </button>
+      )}
     </main>
   );
 }
