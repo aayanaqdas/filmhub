@@ -29,7 +29,8 @@ export const api = {
   getTopRatedTv: () => apiCall(`/top-rated/tv`),
 
   getNowPlaying: (mediaType) => apiCall(`/now-playing/${mediaType}`),
-  getLatest: (mediaType) => apiCall(`/latest/${mediaType}`),
+
+  getLatestTrailers: (filter = "popular") => apiCall(`/latest-trailers?filter=${filter}`),
 
   // Media details
   getMediaDetails: (mediaType, id) => apiCall(`/details/${mediaType}/${id}`),
@@ -37,7 +38,8 @@ export const api = {
     apiCall(`/details/${mediaType}/${id}/season/${seasonNumber}`),
 
   // Search
-  searchMulti: (query, page = 1) => apiCall(`/search/${encodeURIComponent(query)}?page=${page}`),
+  searchMulti: (query, filter, page = 1) =>
+    apiCall(`/search/${filter}/${encodeURIComponent(query)}?page=${page}`),
 
   getDiscoverMedia: (mediaType, filters = {}, signal, page = 1) => {
     const params = new URLSearchParams();

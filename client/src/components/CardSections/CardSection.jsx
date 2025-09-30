@@ -1,4 +1,5 @@
 import Cards from "./Cards";
+import VideoCard from "./VideoCard";
 import NavigationButton from "../NavigationButton";
 import { useRef, useMemo } from "react";
 
@@ -15,6 +16,7 @@ export default function CardSection({
   onFilterChange,
   loading = false,
   error = null,
+  openVideoModal,
 }) {
   const scrollContainerRef = useRef(null);
 
@@ -61,6 +63,15 @@ export default function CardSection({
           posterPath={person.profile_path}
           title={person.name}
           character={person.character}
+        />
+      ));
+    } else if (mediaType === "video") {
+      return data.map((video, index) => (
+        <VideoCard
+          key={`${video.key}-${index}`}
+          video={video}
+          onVideoClick={openVideoModal}
+          page={"homepage"}
         />
       ));
     } else {

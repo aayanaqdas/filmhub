@@ -174,27 +174,56 @@ app.get("/api/now-playing/:mediaType", async (req, res) => {
   }
 });
 
-// Latest content (for trailers, sorted by release date)
-app.get("/api/latest/:mediaType", async (req, res) => {
-  const { mediaType } = req.params;
-  const region = req.query.region || "US";
-  // const cacheKey = `latest_${mediaType}_${region}`;
-
-  // const cachedData = cache.get(cacheKey);
-  // if (cachedData) {
-  //   return res.status(200).json(cachedData);
-  // }
-
+app.get("/api/latest-trailers", async (req, res) => {
   try {
-    const response = await axios.get(
-      `${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}&sort_by=primary_release_date.desc&page=1&region=${region}&include_adult=false`
-    );
-    const data = { data: response.data };
-    //cache.set(cacheKey, data);
+    const region = req.query.region || "US";
+    const filter = req.query.filter || "popular";
+    const cacheKey = `latest_trailers_${filter}_${region}`;
+
+    // Check cache first
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      return res.status(200).json(cachedData);
+    }
+
+    // Define streaming providers
+    const streamingProviders = "8|9|337|384|350|531"; // Netflix, Prime, Disney+, HBO Max, Apple TV+, Paramount+
+
+    let endpoint;
+    if (filter === "popular") {
+      endpoint = `${tmdbBaseUrl}/movie/popular?api_key=${apiKey}&region=${region}&page=1`;
+    } else if (filter === "streaming") {
+      endpoint = `${tmdbBaseUrl}/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&with_watch_providers=${streamingProviders}&watch_region=${region}&page=1`;
+    } else if (filter === "theatres") {
+      endpoint = `${tmdbBaseUrl}/movie/now_playing?api_key=${apiKey}&region=${region}&page=1`;
+    } else {
+      endpoint = `${tmdbBaseUrl}/movie/popular?api_key=${apiKey}&region=${region}&page=1`;
+    }
+
+    const response = await axios.get(endpoint);
+    const movies = response.data.results.slice(0, 10);
+
+    const trailers = [];
+    // For each movie, fetch videos and find a trailer
+    for (const movie of movies) {
+      const videoRes = await axios.get(`${tmdbBaseUrl}/movie/${movie.id}/videos?api_key=${apiKey}`);
+      const videoData = videoRes.data;
+      const trailer = videoData.results.find(
+        (v) => v.type.toLowerCase() === "trailer" && v.site === "YouTube"
+      );
+      if (trailer) {
+        // Add movie title to the trailer for better identification
+        trailers.push({ ...trailer, movieTitle: movie.title });
+      }
+    }
+
+    const data = { data: trailers };
+    // Cache the result
+    cache.set(cacheKey, data);
     res.status(200).json(data);
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching latest data" });
+    res.status(500).json({ message: "Error fetching latest trailers" });
   }
 });
 
@@ -241,14 +270,14 @@ app.get("/api/details/tv/:id/season/:seasonNumber", async (req, res) => {
 });
 
 // Search
-app.get("/api/search/:query", async (req, res) => {
+app.get("/api/search/:mediaType/:query", async (req, res) => {
   try {
-    const { query } = req.params;
+    const { query, mediaType } = req.params;
     const page = req.query.page || 1;
     const region = req.query.region || "US"; // Use region from query
 
     const response = await axios.get(
-      `${tmdbBaseUrl}/search/multi?api_key=${apiKey}&query=${encodeURIComponent(
+      `${tmdbBaseUrl}/search/${mediaType}?api_key=${apiKey}&query=${encodeURIComponent(
         query
       )}&page=${page}&region=${region}`
     );

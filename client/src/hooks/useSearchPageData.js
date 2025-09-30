@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 
-export const useSearchData = (query, page) => {
+export const useSearchData = (query, filter, page) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,7 +33,7 @@ export const useSearchData = (query, page) => {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.searchMulti(query, page);
+        const response = await api.searchMulti(query, filter, page);
 
         if (page === 1) {
           setData(response.data); // Replace data for new search
@@ -52,7 +52,7 @@ export const useSearchData = (query, page) => {
     };
 
     searchData();
-  }, [query, page]);
+  }, [query, filter, page]);
 
   return { data, loading, error };
 };

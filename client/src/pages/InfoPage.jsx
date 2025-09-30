@@ -26,7 +26,7 @@ export default function InfoPage() {
   const navigate = useNavigate();
 
   const openVideoModal = (video) => {
-    setSelectedVideo(video);
+    setSelectedVideo(video || { name: "Trailer", key: null, type: "Trailer", site: "YouTube" });
     setIsVideoModalOpen(true);
   };
 

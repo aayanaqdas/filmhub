@@ -5,11 +5,16 @@ import { useTrendingData } from "../hooks/useTrendingData";
 import { usePopularData } from "../hooks/usePopularData";
 import { useTopRatedTvData } from "../hooks/useTopRatedTvData";
 import { usePopularPeopleData } from "../hooks/usePopularPeopleData";
+import { useLatestData } from "../hooks/useLatestData";
+import VideoModal from "../components/InfoPage/VideoModal";
 
 export default function HomePage() {
   // State for each section's filters
   const [trendingFilters, setTrendingFilters] = useState({ timeWindow: "day" });
   const [popularFilters, setPopularFilters] = useState({ filter: "streaming" });
+  const [latestFilters, setLatestFilters] = useState({ filter: "popular" });
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   // Hooks for each section
   const {
@@ -22,8 +27,13 @@ export default function HomePage() {
     loading: popularLoading,
     error: popularError,
   } = usePopularData(popularFilters.filter);
-  const { data: tvData, loading: tvLoading, error: tvError } = useTopRatedTvData();
   const { data: peopleData, loading: peopleLoading, error: peopleError } = usePopularPeopleData();
+  const { data: tvData, loading: tvLoading, error: tvError } = useTopRatedTvData();
+  const {
+    data: latestData,
+    loading: latestLoading,
+    error: latestError,
+  } = useLatestData(latestFilters.filter);
 
   // Handlers for filter changes
   const handleTrendingFilterChange = (newFilters) => {
@@ -31,6 +41,20 @@ export default function HomePage() {
   };
   const handlePopularFilterChange = (newFilters) => {
     setPopularFilters(newFilters);
+  };
+
+  const handleLatestFilterChange = (newFilters) => {
+    setLatestFilters(newFilters);
+  };
+
+  const openVideoModal = (video) => {
+    setSelectedVideo(video || { name: "Trailer", key: null, type: "Trailer", site: "YouTube" });
+    setIsVideoModalOpen(true);
+  };
+
+  const closeVideoModal = () => {
+    setIsVideoModalOpen(false);
+    setSelectedVideo(null);
   };
 
   return (
@@ -64,6 +88,22 @@ export default function HomePage() {
           loading={popularLoading}
           error={popularError}
         />
+
+        <CardSection
+          sectionTitle="Latest trailers"
+          data={latestData}
+          mediaType="video"
+          filters={latestFilters}
+          hasFilterButton={true}
+          filterKey="filter"
+          filterOptions={["popular", "streaming", "theatres"]}
+          filterLabels={{ popular: "Popular", streaming: "On Streaming", theatres: "In Theatres" }} // Add this
+          onFilterChange={handleLatestFilterChange}
+          loading={latestLoading}
+          error={latestError}
+          openVideoModal={openVideoModal}
+        />
+
         <CardSection
           sectionTitle="Top rated TV-Shows"
           data={tvData}
@@ -81,6 +121,9 @@ export default function HomePage() {
           error={peopleError}
         />
       </div>
+      {isVideoModalOpen && (
+        <VideoModal closeVideoModal={closeVideoModal} videoObj={selectedVideo} />
+      )}
     </main>
   );
 }

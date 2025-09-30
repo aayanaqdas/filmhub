@@ -131,7 +131,7 @@ export default function HeroSection({ data, mediaType, onWatchNowClick, openVide
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                <span>Watch Now</span>
+                <span>Where to watch</span>
               </button>
 
               <button
@@ -194,7 +194,7 @@ export default function HeroSection({ data, mediaType, onWatchNowClick, openVide
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
-            <span>Watch Now</span>
+            <span>Where to watch</span>
           </button>
 
           <button

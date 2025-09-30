@@ -170,7 +170,7 @@ export default function DiscoverPage() {
   return (
     <main className="flex flex-col sm:flex-row min-h-screen mt-20">
       {/* Sidebar */}
-      <aside className="min-w-100 sm:max-w-100 p-6 space-y-4 sm:sticky sm:top-20 sm:self-start sm:h-[calc(100vh-5rem)] sm:overflow-y-auto">
+      <aside className="min-w-80 md:min-w-100 max-w-100 p-6 space-y-4 sm:sticky sm:top-20 sm:self-start sm:h-[calc(100vh-5rem)] sm:overflow-y-auto">
         <h2 className="text-xl font-bold text-primary-2 mb-6 tracking-wide">Filters</h2>
         <FilterBtns
           title="Sort"

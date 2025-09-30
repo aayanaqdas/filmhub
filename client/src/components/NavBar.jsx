@@ -5,6 +5,7 @@ import homeIcon from "../assets/home-icon.svg";
 import tvIcon from "../assets/tv-icon.svg";
 import filmIcon from "../assets/film-icon.svg";
 import searchIcon from "../assets/search-icon.svg";
+import RegionSelect from "./RegionSelect";
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -90,6 +91,9 @@ export default function NavBar() {
             </span>
           </button>
         ))}
+      </div>
+      <div className="hidden md:block ml-auto px-4">
+        <RegionSelect />
       </div>
     </nav>
   );

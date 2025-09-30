@@ -2,18 +2,25 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSearchData } from "../hooks/useSearchPageData";
 import SearchCard from "../components/CardSections/SearchCard";
+import { useTrendingData } from "../hooks/useTrendingData";
+import Cards from "../components/CardSections/Cards";
 
 export default function SearchPage() {
+  const {
+    data: trendingData,
+    loading: trendingLoading,
+    error: trendingError,
+  } = useTrendingData("day");
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState("multi");
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const {
     data: searchData,
     loading: searchLoading,
     error: searchError,
-  } = useSearchData(searchQuery, page);
-  console.log(searchData);
+  } = useSearchData(searchQuery, filter, page);
 
   // Handle URL changes (for link sharing)
   useEffect(() => {
@@ -70,15 +77,59 @@ export default function SearchPage() {
   }, [searchQuery, searchLoading, isLoadingMore, page, searchData?.total_pages]);
 
   const renderDefaultContent = () => {
+    const exampleQueries = trendingData?.slice(12, 16).map((item) => item.title || item.name) || [
+      "Inception",
+      "Breaking Bad",
+      "Kevin Hart",
+      "Suits",
+    ];
+
     return (
       <div className="w-full max-w-7xl mx-auto px-6 mb-8">
-        <div>
-          <h2 className="text-white text-2xl md:text-3xl font-bold mb-4">
-            Discover Movies & TV Shows
-          </h2>
-          <p className="text-primary-2 text-lg">
-            Search for your favorite movies, TV shows, and celebrities
+        {/* Discover Section */}
+        <div className="mb-12">
+          <h2 className="text-white text-3xl font-bold mb-4">Discover Movies & TV Shows</h2>
+          <p className="text-gray-400 text-lg">
+            Search for your favorite movies, TV shows, and celebrities, or explore trending content.
           </p>
+        </div>
+
+        {/* Search Tips Section */}
+        <div className="mb-12">
+          <h2 className="text-white text-2xl font-bold mb-4">Search Suggestions</h2>
+          <p className="text-gray-400 text-lg mb-6">
+            Not sure what to search for? Try one of these popular queries:
+          </p>
+          <div className="flex flex-wrap gap-4">
+            {exampleQueries.map((query) => (
+              <button
+                key={query}
+                onClick={() => setSearchParams({ q: query })}
+                className="bg-gray-800/80 text-white px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-300 shadow-md cursor-pointer"
+              >
+                {query}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Trending Section */}
+        <div>
+          <h2 className="text-white text-2xl font-bold mb-4">Trending Today</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+            {trendingLoading && <p className="text-gray-400">Loading...</p>}
+            {trendingError && <p className="text-red-500">Error loading trending content.</p>}
+            {trendingData?.map((item) => (
+              <Cards
+                key={item.id}
+                id={item.id}
+                title={item.title || item.name}
+                mediaType={item.media_type}
+                posterPath={item.poster_path || item.profile_path}
+                voteAverage={item.vote_average}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -115,22 +166,55 @@ export default function SearchPage() {
       );
     }
 
-    if (searchData?.total_results === 0 && searchQuery.trim()) {
-      return (
-        <div className="w-full max-w-7xl mx-auto px-6">
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="text-gray-400 text-xl mb-4">No results found</div>
-            <p className="text-gray-500 text-center">
-              Try searching with different keywords or check your spelling
-            </p>
-          </div>
-        </div>
-      );
-    }
-
     // Show results
     return (
       <div className="w-full max-w-7xl mx-auto px-6">
+        <div className="flex flex-wrap gap-4 mb-4">
+          <button
+            onClick={() => {
+              setFilter("multi");
+              setPage(1);
+            }}
+            className={`px-4 py-2 rounded-lg cursor-pointer ${
+              filter === "multi" ? "bg-primary text-white" : "bg-gray-800/80 text-gray-300"
+            } hover:bg-primary-1 transition`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => {
+              setFilter("movie");
+              setPage(1);
+            }}
+            className={`px-4 py-2 rounded-lg cursor-pointer ${
+              filter === "movie" ? "bg-primary text-white" : "bg-gray-800/80 text-gray-300"
+            } hover:bg-primary-1 transition`}
+          >
+            Movies
+          </button>
+          <button
+            onClick={() => {
+              setFilter("tv");
+              setPage(1);
+            }}
+            className={`px-4 py-2 rounded-lg cursor-pointer ${
+              filter === "tv" ? "bg-primary text-white" : "bg-gray-800/80 text-gray-300"
+            } hover:bg-primary-1 transition`}
+          >
+            TV Shows
+          </button>
+          <button
+            onClick={() => {
+              setFilter("person");
+              setPage(1);
+            }}
+            className={`px-4 py-2 rounded-lg cursor-pointer ${
+              filter === "person" ? "bg-primary text-white" : "bg-gray-800/80 text-gray-300"
+            } hover:bg-primary-1 transition `}
+          >
+            People
+          </button>
+        </div>
         <div className="mb-6">
           <h2 className="text-white text-2xl md:text-3xl font-bold mb-2">Search Results</h2>
           <p className="text-primary-2">
@@ -145,7 +229,7 @@ export default function SearchPage() {
               key={`${item.id}-${item.media_type}-${index}`} // Use index for better uniqueness
               id={item.id}
               title={item.title || item.name}
-              mediaType={item.media_type}
+              mediaType={item.media_type || filter}
               posterPath={item.poster_path || item.profile_path}
               voteAverage={item.vote_average}
               overview={item.overview}
@@ -159,6 +243,15 @@ export default function SearchPage() {
         {isLoadingMore && (
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-2"></div>
+          </div>
+        )}
+
+        {searchData?.total_results === 0 && searchQuery.trim() && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="text-gray-400 text-xl mb-4">No results found</div>
+            <p className="text-gray-500 text-center">
+              Try searching with different keywords, filters or check your spelling
+            </p>
           </div>
         )}
       </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function VideoCard({ video, onVideoClick }) {
+export default function VideoCard({ video, onVideoClick, page }) {
   const [imageError, setImageError] = useState(false);
 
   const getVideoTypeColor = (type) => {
@@ -46,6 +46,41 @@ export default function VideoCard({ video, onVideoClick }) {
 
   // Add priority indicator for high-priority videos
   const isHighPriority = getVideoTypePriority(video.type) <= 2; // Trailers and Teasers
+
+  if (page === "homepage") {
+    return (
+      <div className="flex-shrink-0 w-72 bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-600/30 hover:border-primary-2/50 hover:shadow-lg hover:shadow-primary-2/10 transition-all duration-300 group cursor-pointer">
+        {/* Video Thumbnail */}
+        <div
+          className="aspect-video bg-gray-700 relative overflow-hidden"
+          onClick={() => onVideoClick(video)}
+        >
+          <img
+            src={imageError ? getThumbnailUrl(video.key, "hqdefault") : getThumbnailUrl(video.key)}
+            alt={video.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={handleImageError}
+          />
+
+          {/* Play Button Overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+            <span className="[&>svg]:h-15 [&>svg]:w-15 [&>svg]:fill-[#ff0000]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                <path d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        {/* Simple Video Info */}
+        <div className="p-4">
+          <h3 className="text-white font-semibold text-sm mb-1 line-clamp-2 group-hover:text-primary-2 transition-colors duration-200">
+            {video.movieTitle} - {video.name}
+          </h3>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-shrink-0 w-72 bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-600/30 hover:border-primary-2/50 hover:shadow-lg hover:shadow-primary-2/10 transition-all duration-300 group cursor-pointer">
