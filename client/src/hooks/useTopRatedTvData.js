@@ -14,7 +14,9 @@ export const useTopRatedTvData = () => {
         const response = await api.getTopRatedTv();
         setData(response.data.results);
       } catch (err) {
-        setError(err.message);
+        const errorMessage =
+          err.response?.data?.message || err.response?.data?.error || err.message;
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

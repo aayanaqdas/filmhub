@@ -12,7 +12,9 @@ export const useLatestData = (filter = "popular") => {
         const result = await api.getLatestTrailers(filter);
         setData(result.data);
       } catch (err) {
-        setError(err.message);
+        const errorMessage =
+          err.response?.data?.message || err.response?.data?.error || err.message;
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

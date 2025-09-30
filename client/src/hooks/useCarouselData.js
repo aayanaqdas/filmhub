@@ -13,7 +13,9 @@ export const useCarouselData = () => {
         const mediaWithDetails = await api.getHomepageCarousel();
         setCarouselItems(mediaWithDetails);
       } catch (err) {
-        setError(err.message);
+        const errorMessage =
+          err.response?.data?.message || err.response?.data?.error || err.message;
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

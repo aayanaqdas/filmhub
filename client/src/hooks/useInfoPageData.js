@@ -18,8 +18,9 @@ export const useInfoPageData = (mediaType, id, seasonNumber) => {
           setData(mediaDetails.data);
         }
       } catch (err) {
-        const tmdbMessage = err.response?.data?.message;
-        setError(tmdbMessage || err.message);
+        const errorMessage =
+          err.response?.data?.message || err.response?.data?.error || err.message;
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

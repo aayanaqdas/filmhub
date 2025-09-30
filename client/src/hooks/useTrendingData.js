@@ -14,7 +14,9 @@ export const useTrendingData = (timeWindow) => {
         const response = await api.getTrending(timeWindow);
         setData(response.data.results.filter((item) => item.media_type !== "person"));
       } catch (err) {
-        setError(err.message);
+        const errorMessage =
+          err.response?.data?.message || err.response?.data?.error || err.message;
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

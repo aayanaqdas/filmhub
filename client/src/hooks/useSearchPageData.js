@@ -44,7 +44,9 @@ export const useSearchData = (query, filter, page) => {
           })); // Append results for pagination
         }
       } catch (err) {
-        setError(err.message);
+        const errorMessage =
+          err.response?.data?.message || err.response?.data?.error || err.message;
+        setError(errorMessage);
         setData([]);
       } finally {
         setLoading(false);

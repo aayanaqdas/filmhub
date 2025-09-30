@@ -5,6 +5,7 @@ const axios = require("axios");
 const app = express();
 const cors = require("cors");
 const NodeCache = require("node-cache");
+const rateLimit = require("express-rate-limit");
 const cache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes (600 seconds)
 
 const clientHost = process.env.CLIENT_HOST;
@@ -18,6 +19,18 @@ const PORT = process.env.PORT || 8080;
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 
 app.use(cors(corsOptions));
+
+const limiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 200, // 200 requests per 5 minute per IP
+  message: {
+    error: "Too many requests from this IP, please try again later.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
@@ -73,7 +86,9 @@ app.get("/api/homepage/carousel", async (req, res) => {
     res.status(200).json(mediaWithDetails);
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching carousel data" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching carousel data";
+    res.status(status).json({ message });
   }
 });
 
@@ -98,7 +113,9 @@ app.get("/api/trending/:mediaType", async (req, res) => {
     res.status(200).json(data);
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching trending data" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching trending data";
+    res.status(status).json({ message });
   }
 });
 
@@ -122,7 +139,9 @@ app.get("/api/popular/:mediaType", async (req, res) => {
     res.status(200).json(data);
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching popular data" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching popular data";
+    res.status(status).json({ message });
   }
 });
 
@@ -146,7 +165,9 @@ app.get("/api/top-rated/:mediaType", async (req, res) => {
     res.status(200).json(data);
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching top rated data" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching top rated data";
+    res.status(status).json({ message });
   }
 });
 
@@ -170,7 +191,9 @@ app.get("/api/now-playing/:mediaType", async (req, res) => {
     res.status(200).json(data);
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching now playing data" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching now playing data";
+    res.status(status).json({ message });
   }
 });
 
@@ -223,7 +246,9 @@ app.get("/api/latest-trailers", async (req, res) => {
     res.status(200).json(data);
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching latest trailers" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching latest trailers";
+    res.status(status).json({ message });
   }
 });
 
@@ -265,7 +290,9 @@ app.get("/api/details/tv/:id/season/:seasonNumber", async (req, res) => {
     res.status(200).json({ data: response.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching season details" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching season details";
+    res.status(status).json({ message });
   }
 });
 
@@ -284,7 +311,9 @@ app.get("/api/search/:mediaType/:query", async (req, res) => {
     res.status(200).json({ data: response.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching search results" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching search results";
+    res.status(status).json({ message });
   }
 });
 
@@ -297,7 +326,9 @@ app.get("/api/discover/:mediaType", async (req, res) => {
     res.status(200).json({ data: response.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching discover results" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching discover results";
+    res.status(status).json({ message });
   }
 });
 

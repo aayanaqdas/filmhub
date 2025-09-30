@@ -96,7 +96,6 @@ export default function SearchPage() {
 
         {/* Search Tips Section */}
         <div className="mb-12">
-          <h2 className="text-white text-2xl font-bold mb-4">Search Suggestions</h2>
           <p className="text-gray-400 text-lg mb-6">
             Not sure what to search for? Try one of these popular queries:
           </p>

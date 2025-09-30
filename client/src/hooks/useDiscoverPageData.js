@@ -35,7 +35,9 @@ export const useDiscoverPageData = (mediaType, filters, page) => {
         }
       } catch (err) {
         if (!signal.aborted) {
-          setError(err.message);
+          const errorMessage =
+            err.response?.data?.message || err.response?.data?.error || err.message;
+          setError(errorMessage);
           setData({ results: [] });
         }
       } finally {
