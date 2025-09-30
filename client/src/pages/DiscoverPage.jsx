@@ -32,6 +32,7 @@ export default function DiscoverPage() {
       dateFrom: null,
       dateTo: null,
       sortBy: "popularity.desc",
+      voteCountGte: 200,
     }),
     []
   );
@@ -45,7 +46,7 @@ export default function DiscoverPage() {
 
   const region = localStorage.getItem("region") || "US";
   const { data, loading, error } = useDiscoverPageData(mediaType, appliedFilters, page);
-  console.log(data);
+
   // Reset filters when mediaType changes
   useEffect(() => {
     setFilters(initialFilters);
@@ -105,20 +106,28 @@ export default function DiscoverPage() {
   }, [mediaType, data?.total_results, detectEnd]);
 
   // Render cards
-  const cards = useMemo(
-    () =>
-      data?.results?.map((media) => (
-        <Cards
-          key={media.id}
-          id={media.id}
-          mediaType={mediaType}
-          posterPath={media.poster_path}
-          title={media.title || media.name}
-          voteAverage={media.vote_average}
-        />
-      )),
-    [data, mediaType]
-  );
+  const cards = useMemo(() => {
+    if (!data?.results) return [];
+
+    // Remove duplicates based on id
+    const seen = new Set();
+    const uniqueResults = data.results.filter((media) => {
+      if (seen.has(media.id)) return false;
+      seen.add(media.id);
+      return true;
+    });
+
+    return uniqueResults.map((media) => (
+      <Cards
+        key={media.id}
+        id={media.id}
+        mediaType={mediaType}
+        posterPath={media.poster_path}
+        title={media.title || media.name}
+        voteAverage={media.vote_average}
+      />
+    ));
+  }, [data, mediaType]);
 
   // Check if filters have changed
   const filtersChanged = !areFiltersEqual(filters, appliedFilters);

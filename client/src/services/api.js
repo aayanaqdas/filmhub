@@ -7,7 +7,6 @@ const userRegion = localStorage.getItem("region") || "US";
 
 const apiCall = async (endpoint, signal) => {
   try {
-    console.log(endpoint);
     const separator = endpoint.includes("?") ? "&" : "?";
     const response = await axios.get(`${baseUrl}${endpoint}${separator}region=${userRegion}`, {
       signal,
@@ -29,6 +28,9 @@ export const api = {
   // Top rated
   getTopRatedTv: () => apiCall(`/top-rated/tv`),
 
+  getNowPlaying: (mediaType) => apiCall(`/now-playing/${mediaType}`),
+  getLatest: (mediaType) => apiCall(`/latest/${mediaType}`),
+
   // Media details
   getMediaDetails: (mediaType, id) => apiCall(`/details/${mediaType}/${id}`),
   getSeasonDetails: (mediaType, id, seasonNumber) =>
@@ -42,6 +44,9 @@ export const api = {
 
     if (filters.sortBy) {
       params.append("sort_by", filters.sortBy);
+    }
+    if (filters.voteCountGte) {
+      params.append("vote_count.gte", filters.voteCountGte);
     }
     if (filters.providers && filters.providers.length > 0) {
       params.append("watch_region", userRegion);
@@ -64,7 +69,6 @@ export const api = {
     params.append("page", page);
 
     const query = params.toString() ? `?${params.toString()}` : "";
-    console.log(query);
     return apiCall(`/discover/${mediaType}${query}`, signal);
   },
 };

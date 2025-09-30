@@ -1,50 +1,37 @@
 import HeroCarousel from "../components/HeroCarousel/HeroCarousel";
 import CardSection from "../components/CardSections/CardSection";
 import { useState } from "react";
-import { useHomePageData } from "../hooks/useHomePageData";
+import { useTrendingData } from "../hooks/useTrendingData";
+import { usePopularData } from "../hooks/usePopularData";
+import { useTopRatedTvData } from "../hooks/useTopRatedTvData";
+import { usePopularPeopleData } from "../hooks/usePopularPeopleData";
 
 export default function HomePage() {
-  const [timeWindow, setTimeWindow] = useState("week");
-  const { data, loading, error } = useHomePageData(timeWindow);
+  // State for each section's filters
+  const [trendingFilters, setTrendingFilters] = useState({ timeWindow: "day" });
+  const [popularFilters, setPopularFilters] = useState({ filter: "streaming" });
 
-  const handleTimeWindowChange = (newTimeWindow) => {
-    setTimeWindow(newTimeWindow);
+  // Hooks for each section
+  const {
+    data: trendingData,
+    loading: trendingLoading,
+    error: trendingError,
+  } = useTrendingData(trendingFilters.timeWindow);
+  const {
+    data: popularData,
+    loading: popularLoading,
+    error: popularError,
+  } = usePopularData(popularFilters.filter);
+  const { data: tvData, loading: tvLoading, error: tvError } = useTopRatedTvData();
+  const { data: peopleData, loading: peopleLoading, error: peopleError } = usePopularPeopleData();
+
+  // Handlers for filter changes
+  const handleTrendingFilterChange = (newFilters) => {
+    setTrendingFilters(newFilters);
   };
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
-          Error: {error}
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <main>
-        <div className="relative w-full h-[50vh] min-h-[500px] mt-5 overflow-hidden">
-          <div className="w-full h-[70vh] flex items-center justify-center bg-background">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
-          </div>
-        </div>
-        <div className="w-full flex flex-col items-center">
-          <div className="w-full pt-5 px-7">
-            <div className="h-8 bg-gray-800 rounded mb-4 animate-pulse"></div>
-            <div className="flex gap-4">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-36 h-50 bg-gray-800 rounded animate-pulse flex-shrink-0"
-                ></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
+  const handlePopularFilterChange = (newFilters) => {
+    setPopularFilters(newFilters);
+  };
 
   return (
     <main className="pt-12">
@@ -52,14 +39,47 @@ export default function HomePage() {
       <div className="w-full flex flex-col items-center">
         <CardSection
           sectionTitle="Trending"
-          data={data.trending}
+          data={trendingData}
           mediaType="all"
-          timeWindow={timeWindow}
+          filters={trendingFilters}
           hasFilterButton={true}
-          onTimeWindowChange={handleTimeWindowChange}
+          filterKey="timeWindow"
+          filterOptions={["day", "week"]}
+          filterLabels={{ day: "Today", week: "This Week" }}
+          onFilterChange={handleTrendingFilterChange}
+          loading={trendingLoading}
+          error={trendingError}
         />
-        <CardSection sectionTitle="Top rated TV-Shows" data={data.topRatedTv} mediaType="tv" />
-        <CardSection sectionTitle="Popular people" data={data.popularPeople} mediaType="person" />
+
+        <CardSection
+          sectionTitle="What's popular"
+          data={popularData}
+          mediaType="movie"
+          filters={popularFilters}
+          hasFilterButton={true}
+          filterKey="filter"
+          filterOptions={["streaming", "theatres"]}
+          filterLabels={{ streaming: "On Streaming", theatres: "In Theatres" }}
+          onFilterChange={handlePopularFilterChange}
+          loading={popularLoading}
+          error={popularError}
+        />
+        <CardSection
+          sectionTitle="Top rated TV-Shows"
+          data={tvData}
+          mediaType="tv"
+          hasFilterButton={false}
+          loading={tvLoading}
+          error={tvError}
+        />
+        <CardSection
+          sectionTitle="Popular people"
+          data={peopleData}
+          mediaType="person"
+          hasFilterButton={false}
+          loading={peopleLoading}
+          error={peopleError}
+        />
       </div>
     </main>
   );

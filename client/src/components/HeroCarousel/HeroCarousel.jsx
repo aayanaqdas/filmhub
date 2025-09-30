@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -31,6 +31,14 @@ export default function HeroCarousel() {
     emblaApi.on("select", onSelect);
     return () => emblaApi.off("select", onSelect);
   }, [emblaApi, onSelect]);
+
+  const slides = useMemo(
+    () =>
+      carouselItems.map((item, index) => (
+        <HeroSlide key={item.id} item={item} isActive={index === selectedIndex} />
+      )),
+    [carouselItems, selectedIndex]
+  );
 
   // Error state
   if (error) {
@@ -68,11 +76,7 @@ export default function HeroCarousel() {
     <div className="relative w-full h-[50vh] min-h-[500px] mt-5 overflow-hidden shadow-2xl">
       <div className="h-full px-[1%]">
         <div className="overflow-visible h-full" ref={emblaRef}>
-          <div className="flex h-full">
-            {carouselItems.map((item, index) => (
-              <HeroSlide key={item.id} item={item} isActive={index === selectedIndex} />
-            ))}
-          </div>
+          <div className="flex h-full">{slides}</div>
         </div>
       </div>
 

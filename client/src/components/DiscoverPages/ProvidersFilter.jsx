@@ -13,7 +13,7 @@ export default function WhereToWatchFilter({ filters, setFilters, providersForCo
               src={`https://image.tmdb.org/t/p/w92${provider.logo_path}`}
               alt={provider.provider_name}
               key={provider.provider_id}
-              className={`w-13 h-13 rounded-xl cursor-pointer border-2 transition-all ${
+              className={`w-15 h-15 rounded-xl cursor-pointer border-2 transition-all ${
                 isActive
                   ? "border-primary shadow-lg scale-105"
                   : "border-transparent opacity-70 hover:opacity-100"
