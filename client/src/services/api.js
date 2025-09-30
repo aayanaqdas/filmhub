@@ -5,10 +5,12 @@ const baseUrl = `${serverHost}/api`;
 
 const userRegion = localStorage.getItem("region") || "US";
 
-const apiCall = async (endpoint) => {
+const apiCall = async (endpoint, signal) => {
   try {
     const separator = endpoint.includes("?") ? "&" : "?";
-    const response = await axios.get(`${baseUrl}${endpoint}${separator}region=${userRegion}`);
+    const response = await axios.get(`${baseUrl}${endpoint}${separator}region=${userRegion}`, {
+      signal,
+    });
     return response.data;
   } catch (error) {
     console.error("API Error:", error);
@@ -34,7 +36,7 @@ export const api = {
   // Search
   searchMulti: (query, page = 1) => apiCall(`/search/${encodeURIComponent(query)}?page=${page}`),
 
-  getDiscoverMedia: (mediaType, filters = {}) => {
+  getDiscoverMedia: (mediaType, filters = {}, signal) => {
     const params = new URLSearchParams();
 
     if (filters.sortBy) {
@@ -47,15 +49,19 @@ export const api = {
     if (filters.genres && filters.genres.length > 0) {
       params.append("with_genres", filters.genres.join("|"));
     }
-    if (filters.dateFrom) {
+    if (filters.dateFrom && mediaType === "movie") {
       params.append("primary_release_date.gte", filters.dateFrom);
+    } else if (filters.dateTo) {
+      params.append("first_air_date.gte", filters.dateFrom);
     }
-    if (filters.dateTo) {
+    if (filters.dateTo && mediaType === "movie") {
       params.append("primary_release_date.lte", filters.dateTo);
+    } else if (filters.dateTo) {
+      params.append("first_air_date.lte", filters.dateFrom);
     }
 
     const query = params.toString() ? `?${params.toString()}` : "";
     console.log(query);
-    return apiCall(`/discover/${mediaType}${query}`);
+    return apiCall(`/discover/${mediaType}${query}`, signal);
   },
 };

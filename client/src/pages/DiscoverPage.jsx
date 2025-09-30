@@ -22,6 +22,7 @@ function areFiltersEqual(a, b) {
 }
 
 export default function DiscoverPage() {
+  const { mediaType } = useParams();
   const [filters, setFilters] = useState({
     providers: [],
     genres: [],
@@ -36,25 +37,24 @@ export default function DiscoverPage() {
     filters: false,
   });
   const [watchProviders, setWatchProviders] = useState([]);
-  const { mediaType } = useParams();
-
-  // Reset genres and providers when mediaType changes
-  useEffect(() => {
-    setFilters((prev) => ({
-      ...prev,
-      providers: [],
-      genres: [],
-    }));
-    setAppliedFilters((prev) => ({
-      ...prev,
-      providers: [],
-      genres: [],
-    }));
-  }, [mediaType]);
 
   const { data, loading, error } = useDiscoverPageData(mediaType, appliedFilters);
 
   const region = localStorage.getItem("region") || "US";
+
+  // Reset filters when mediaType changes
+  useEffect(() => {
+    const reset = {
+      providers: [],
+      genres: [],
+      dateFrom: null,
+      dateTo: null,
+      sortBy: "popularity.desc",
+    };
+
+    setFilters(reset);
+    setAppliedFilters(reset);
+  }, [mediaType]);
 
   // Dynamically import providers based on mediaType
   useEffect(() => {
@@ -82,6 +82,7 @@ export default function DiscoverPage() {
       ),
     [watchProviders, region]
   );
+
   const cards = useMemo(
     () =>
       data?.map((media) => (
@@ -137,6 +138,7 @@ export default function DiscoverPage() {
           title="Where to watch"
           expanded={expanded.where}
           onClick={() => setExpanded((prev) => ({ ...prev, where: !prev.where }))}
+          providerLength={providersForCountry.length}
         >
           <WhereToWatchFilter
             filters={filters}
@@ -157,7 +159,9 @@ export default function DiscoverPage() {
       </aside>
       {/* Main Content */}
       <section className="flex-1 p-8 justify-center">
-        <h1 className="font-bold text-3xl text-white mb-8 tracking-wide">Discover Movies</h1>
+        <h1 className="font-bold text-3xl text-white mb-8 tracking-wide">
+          Discover {mediaType === "movie" ? "Movies" : "TV Shows"}
+        </h1>
         <div className="flex flex-wrap gap-8">{cards}</div>
       </section>
       {/* Show results button only visible if a new filter is applied */}
