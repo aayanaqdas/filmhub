@@ -11,6 +11,16 @@ export default function HomePage() {
     setTimeWindow(newTimeWindow);
   };
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
+          Error: {error}
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <main>
@@ -33,16 +43,6 @@ export default function HomePage() {
           </div>
         </div>
       </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
-          Error: {error}
-        </div>
-      </div>
     );
   }
 

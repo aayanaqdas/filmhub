@@ -178,6 +178,7 @@ export default function HeroSlide({ item, isActive }) {
               src={`${baseImgUrl}${logoPath}`}
               alt={item.title || item.name}
               className="h-16 md:h-20 lg:h-24 xl:h-32 mb-6 object-contain"
+              loading="lazy"
             />
           ) : (
             <h1 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">

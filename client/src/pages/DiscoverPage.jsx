@@ -129,23 +129,6 @@ export default function DiscoverPage() {
     setPage(1);
   };
 
-  // Loading state
-  if (!data) {
-    return (
-      <div className="w-full h-[70vh] flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  if (page === 1 && loading) {
-    return (
-      <div className="w-full h-[70vh] flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
-      </div>
-    );
-  }
-
   // Error state
   if (error) {
     return (
@@ -157,11 +140,28 @@ export default function DiscoverPage() {
     );
   }
 
+  // Loading state
+  if (page === 1 && loading) {
+    return (
+      <div className="w-full h-[70vh] flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="w-full h-[70vh] flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
+      </div>
+    );
+  }
+
   // Main render
   return (
     <main className="flex flex-col sm:flex-row min-h-screen mt-20">
       {/* Sidebar */}
-      <aside className="min-w-80 sm:max-w-80 p-6 space-y-4">
+      <aside className="min-w-100 sm:max-w-100 p-6 space-y-4 sm:sticky sm:top-20 sm:self-start sm:h-[calc(100vh-5rem)] sm:overflow-y-auto">
         <h2 className="text-xl font-bold text-primary-2 mb-6 tracking-wide">Filters</h2>
         <FilterBtns
           title="Sort"

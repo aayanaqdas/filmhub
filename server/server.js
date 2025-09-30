@@ -116,7 +116,7 @@ app.get("/api/details/:mediaType/:id", async (req, res) => {
         ? "images,release_dates,credits,videos,similar,recommendations,watch/providers,reviews"
         : "images,content_ratings,credits,videos,similar,recommendations,watch/providers,reviews";
 
-    const url = `${tmdbBaseUrl}/${mediaType}/${id}?api_key=${apiKey}&append_to_response=${appendToResponse},${
+    const url = `${tmdbBaseUrl}/${mediaType}/${id}?api_key=${apiKey}&include_adult=false&append_to_response=${appendToResponse},${
       mediaType === "person" ? "combined_credits" : "credits"
     }`;
 
@@ -124,7 +124,9 @@ app.get("/api/details/:mediaType/:id", async (req, res) => {
     res.status(200).json({ data: response.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-    res.status(500).json({ message: "Error fetching media details" });
+    const status = err.response?.status || 500;
+    const message = err.response?.data?.status_message || "Error fetching media details";
+    res.status(status).json({ message });
   }
 });
 
@@ -166,7 +168,7 @@ app.get("/api/discover/:mediaType", async (req, res) => {
   try {
     const { mediaType } = req.params;
     const query = new URLSearchParams(req.query).toString();
-    const url = `${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}&${query}`;
+    const url = `${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}&${query}&include_adult=false`;
     const response = await axios.get(url);
     res.status(200).json({ data: response.data });
   } catch (err) {

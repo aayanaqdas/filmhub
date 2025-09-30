@@ -46,7 +46,17 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
     }
   };
 
-  if (!data || loading) {
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
+          Error: {error}
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
     return (
       <div className="w-full h-[70vh] flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
@@ -54,12 +64,10 @@ export default function SeasonInfoPage({ data, loading, error, showId, showTitle
     );
   }
 
-  if (error) {
+  if (!data || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
-          Error: {error}
-        </div>
+      <div className="w-full h-[70vh] flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
       </div>
     );
   }

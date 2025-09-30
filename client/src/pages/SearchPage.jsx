@@ -85,6 +85,15 @@ export default function SearchPage() {
   };
 
   const renderSearchResults = () => {
+    if (searchError) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
+            Error: {searchError}
+          </div>
+        </div>
+      );
+    }
     // Skeelton only for page 1 or no data
     if (searchLoading && (page === 1 || !searchData?.results?.length)) {
       return (
@@ -101,16 +110,6 @@ export default function SearchPage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      );
-    }
-
-    if (searchError) {
-      return (
-        <div className="flex items-center justify-center min-h-screen bg-background">
-          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
-            Error: {searchError}
           </div>
         </div>
       );

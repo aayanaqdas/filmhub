@@ -25,15 +25,6 @@ export default function InfoPage() {
   const userRegion = localStorage.getItem("region") || "US";
   const navigate = useNavigate();
 
-  if (!data) {
-    return (
-      <div className="w-full h-[70vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-2"></div>
-      </div>
-    );
-  }
-
-  console.log(data);
   const openVideoModal = (video) => {
     setSelectedVideo(video);
     setIsVideoModalOpen(true);
@@ -61,6 +52,16 @@ export default function InfoPage() {
     });
   };
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
+          Error: {error}
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="w-full h-[70vh] flex items-center justify-center bg-background">
@@ -69,12 +70,10 @@ export default function InfoPage() {
     );
   }
 
-  if (error) {
+  if (!data) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
-          Error: {error}
-        </div>
+      <div className="w-full h-[70vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-2"></div>
       </div>
     );
   }

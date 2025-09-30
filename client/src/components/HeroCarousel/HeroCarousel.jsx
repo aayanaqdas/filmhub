@@ -32,23 +32,22 @@ export default function HeroCarousel() {
     return () => emblaApi.off("select", onSelect);
   }, [emblaApi, onSelect]);
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="relative w-full h-[50vh] min-h-[500px] mt-5 overflow-hidden">
-        <div className="flex items-center justify-center h-full">
-          <div className="text-white text-xl">Loading...</div>
-        </div>
-      </div>
-    );
-  }
-
   // Error state
   if (error) {
     return (
       <div className="relative w-full h-[50vh] min-h-[500px] mt-5 overflow-hidden">
         <div className="flex items-center justify-center h-full">
           <div className="text-red-500 text-xl">Error: {error}</div>
+        </div>
+      </div>
+    );
+  }
+  // Loading state
+  if (loading) {
+    return (
+      <div className="relative w-full h-[50vh] min-h-[500px] mt-5 overflow-hidden">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-white text-xl">Loading...</div>
         </div>
       </div>
     );

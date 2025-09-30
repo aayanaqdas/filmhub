@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import NavBar from "./components/NavBar";
+import NotFoundPage from "./pages/NotFoundPage";
 
 // Lazy load each page
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/:mediaType/:id" element={<InfoPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/:mediaType" element={<DiscoverPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </>
