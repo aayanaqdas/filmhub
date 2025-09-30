@@ -7,6 +7,7 @@ const userRegion = localStorage.getItem("region") || "US";
 
 const apiCall = async (endpoint, signal) => {
   try {
+    console.log(endpoint);
     const separator = endpoint.includes("?") ? "&" : "?";
     const response = await axios.get(`${baseUrl}${endpoint}${separator}region=${userRegion}`, {
       signal,
@@ -36,7 +37,7 @@ export const api = {
   // Search
   searchMulti: (query, page = 1) => apiCall(`/search/${encodeURIComponent(query)}?page=${page}`),
 
-  getDiscoverMedia: (mediaType, filters = {}, signal) => {
+  getDiscoverMedia: (mediaType, filters = {}, signal, page = 1) => {
     const params = new URLSearchParams();
 
     if (filters.sortBy) {
@@ -57,8 +58,10 @@ export const api = {
     if (filters.dateTo && mediaType === "movie") {
       params.append("primary_release_date.lte", filters.dateTo);
     } else if (filters.dateTo) {
-      params.append("first_air_date.lte", filters.dateFrom);
+      params.append("first_air_date.lte", filters.dateTo);
     }
+
+    params.append("page", page);
 
     const query = params.toString() ? `?${params.toString()}` : "";
     console.log(query);

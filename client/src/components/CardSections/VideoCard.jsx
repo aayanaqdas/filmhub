@@ -34,7 +34,7 @@ export default function VideoCard({ video, onVideoClick }) {
     return priorities[type] || 999;
   };
 
-  const getThumbnailUrl = (key, quality = "maxresdefault") => {
+  const getThumbnailUrl = (key, quality = "mqdefault") => {
     return `https://img.youtube.com/vi/${key}/${quality}.jpg`;
   };
 

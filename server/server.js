@@ -166,7 +166,6 @@ app.get("/api/discover/:mediaType", async (req, res) => {
   try {
     const { mediaType } = req.params;
     const query = new URLSearchParams(req.query).toString();
-
     const url = `${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}&${query}`;
     const response = await axios.get(url);
     res.status(200).json({ data: response.data });

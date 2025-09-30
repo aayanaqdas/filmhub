@@ -16,7 +16,7 @@ export default function Cards({
   seasonNum,
 }) {
   const navigate = useNavigate();
-  const baseImgUrl = "https://image.tmdb.org/t/p/original";
+  const baseImgUrl = "https://image.tmdb.org/t/p/w500";
 
   const maxLength = 25;
   const truncatedTitle = title?.length > maxLength ? title?.substring(0, maxLength) + "..." : title;
@@ -94,6 +94,7 @@ export default function Cards({
             src={posterPath ? baseImgUrl + posterPath : noImgPerson}
             alt={title}
             className="w-full h-full object-cover"
+            loading="lazy"
           />
         </div>
         <div className="text-center">
@@ -120,6 +121,7 @@ export default function Cards({
         src={posterPath ? baseImgUrl + posterPath : noImg}
         alt={title}
         className="absolute inset-0 w-full h-full"
+        loading={"lazy"}
       />
 
       {mediaType === "tv" && (

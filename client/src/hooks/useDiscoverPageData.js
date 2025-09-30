@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { api } from "../services/api";
 
-export const useDiscoverPageData = (mediaType, filters) => {
-  const [data, setData] = useState(null);
+export const useDiscoverPageData = (mediaType, filters, page) => {
+  const [data, setData] = useState({ results: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const abortControllerRef = useRef(null);
@@ -21,13 +21,22 @@ export const useDiscoverPageData = (mediaType, filters) => {
       try {
         setLoading(true);
         setError(null);
-        const media = await api.getDiscoverMedia(mediaType, filters, signal);
+        const media = await api.getDiscoverMedia(mediaType, filters, signal, page);
+
         if (!signal.aborted) {
-          setData(media.data.results);
+          if (page === 1) {
+            setData(media.data); // Replace data for new discover
+          } else {
+            setData((prevData) => ({
+              ...media.data,
+              results: [...(prevData?.results || []), ...(media.data.results || [])],
+            })); // Append results for pagination
+          }
         }
       } catch (err) {
         if (!signal.aborted) {
           setError(err.message);
+          setData({ results: [] });
         }
       } finally {
         if (!signal.aborted) {
@@ -46,7 +55,7 @@ export const useDiscoverPageData = (mediaType, filters) => {
         abortControllerRef.current.abort();
       }
     };
-  }, [mediaType, filters]);
+  }, [mediaType, filters, page]);
 
   return { data, loading, error };
 };

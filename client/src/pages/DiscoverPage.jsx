@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useDiscoverPageData } from "../hooks/useDiscoverPageData";
 import Cards from "../components/CardSections/Cards";
@@ -23,49 +23,46 @@ function areFiltersEqual(a, b) {
 
 export default function DiscoverPage() {
   const { mediaType } = useParams();
-  const [filters, setFilters] = useState({
-    providers: [],
-    genres: [],
-    dateFrom: null,
-    dateTo: null,
-    sortBy: "popularity.desc",
-  });
-  const [appliedFilters, setAppliedFilters] = useState(filters);
-  const [expanded, setExpanded] = useState({
-    sort: false,
-    where: false,
-    filters: false,
-  });
-  const [watchProviders, setWatchProviders] = useState([]);
 
-  const { data, loading, error } = useDiscoverPageData(mediaType, appliedFilters);
-
-  const region = localStorage.getItem("region") || "US";
-
-  // Reset filters when mediaType changes
-  useEffect(() => {
-    const reset = {
+  // Initial filter state
+  const initialFilters = useMemo(
+    () => ({
       providers: [],
       genres: [],
       dateFrom: null,
       dateTo: null,
       sortBy: "popularity.desc",
-    };
+    }),
+    []
+  );
 
-    setFilters(reset);
-    setAppliedFilters(reset);
-  }, [mediaType]);
+  const [filters, setFilters] = useState(initialFilters);
+  const [appliedFilters, setAppliedFilters] = useState(initialFilters);
+  const [expanded, setExpanded] = useState({ sort: false, where: false, filters: false });
+  const [watchProviders, setWatchProviders] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const region = localStorage.getItem("region") || "US";
+  const { data, loading, error } = useDiscoverPageData(mediaType, appliedFilters, page);
+  console.log(data);
+  // Reset filters when mediaType changes
+  useEffect(() => {
+    setFilters(initialFilters);
+    setAppliedFilters(initialFilters);
+    setPage(1);
+  }, [mediaType, initialFilters]);
 
   // Dynamically import providers based on mediaType
   useEffect(() => {
     let isMounted = true;
     async function loadProviders() {
-      if (mediaType === "movie") {
-        const { movieProviders } = await import("../movieProviders");
-        if (isMounted) setWatchProviders(movieProviders);
-      } else {
-        const { tvProviders } = await import("../tvProviders");
-        if (isMounted) setWatchProviders(tvProviders);
+      const providersModule =
+        mediaType === "movie" ? await import("../movieProviders") : await import("../tvProviders");
+      if (isMounted) {
+        setWatchProviders(
+          mediaType === "movie" ? providersModule.movieProviders : providersModule.tvProviders
+        );
       }
     }
     loadProviders();
@@ -74,6 +71,7 @@ export default function DiscoverPage() {
     };
   }, [mediaType]);
 
+  // Providers filtered by region
   const providersForCountry = useMemo(
     () =>
       watchProviders.filter(
@@ -83,15 +81,39 @@ export default function DiscoverPage() {
     [watchProviders, region]
   );
 
+  useEffect(() => {
+    if (!loading) {
+      setIsLoadingMore(false);
+    }
+  }, [loading]);
+
+  const detectEnd = useCallback(() => {
+    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 200) {
+      if (!loading && !isLoadingMore && data?.total_pages > page) {
+        setIsLoadingMore(true);
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  }, [loading, isLoadingMore, page, data?.total_pages]);
+
+  useEffect(() => {
+    if (mediaType && data?.total_results !== 0) {
+      document.addEventListener("scroll", detectEnd);
+      return () => document.removeEventListener("scroll", detectEnd);
+    }
+  }, [mediaType, data?.total_results, detectEnd]);
+
+  // Render cards
   const cards = useMemo(
     () =>
-      data?.map((media) => (
+      data?.results?.map((media) => (
         <Cards
           key={media.id}
           id={media.id}
           mediaType={mediaType}
           posterPath={media.poster_path}
-          title={media.title ? media.title : media.name}
+          title={media.title || media.name}
           voteAverage={media.vote_average}
         />
       )),
@@ -101,17 +123,30 @@ export default function DiscoverPage() {
   // Check if filters have changed
   const filtersChanged = !areFiltersEqual(filters, appliedFilters);
 
+  // Apply filters
   const handleShowResults = () => {
     setAppliedFilters(filters);
+    setPage(1);
   };
 
-  if (!data || loading) {
+  // Loading state
+  if (!data) {
     return (
       <div className="w-full h-[70vh] flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
       </div>
     );
   }
+
+  if (page === 1 && loading) {
+    return (
+      <div className="w-full h-[70vh] flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  // Error state
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -122,6 +157,7 @@ export default function DiscoverPage() {
     );
   }
 
+  // Main render
   return (
     <main className="flex flex-col sm:flex-row min-h-screen mt-20">
       {/* Sidebar */}
@@ -157,13 +193,31 @@ export default function DiscoverPage() {
           </div>
         </FilterBtns>
       </aside>
+
       {/* Main Content */}
       <section className="flex-1 p-8 justify-center">
         <h1 className="font-bold text-3xl text-white mb-8 tracking-wide">
           Discover {mediaType === "movie" ? "Movies" : "TV Shows"}
         </h1>
-        <div className="flex flex-wrap gap-8">{cards}</div>
+        {/* No results found text */}
+        {data?.total_results === 0 ? (
+          <div className="w-full max-w-7xl mx-auto px-6">
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="text-gray-400 text-xl mb-4">No results found</div>
+              <p className="text-gray-500 text-center">Try again with different filters</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-8">{cards}</div>
+        )}
+        {/* Show loading spinner */}
+        {isLoadingMore && (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-2"></div>
+          </div>
+        )}
       </section>
+
       {/* Show results button only visible if a new filter is applied */}
       {filtersChanged && (
         <button

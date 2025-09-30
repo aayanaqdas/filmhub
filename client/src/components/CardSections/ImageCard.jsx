@@ -42,6 +42,7 @@ export default function ImageCard({ image, onImageClick }) {
         <img
           src={`${baseImgUrl}${image.file_path}`}
           alt="Movie/TV Image"
+          loading="lazy"
           className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-300 ${
             imageLoaded ? "opacity-100" : "opacity-0"
           }`}

@@ -12,17 +12,17 @@ export default function PersonInfo({ data, loading, error }) {
 
   if (loading) {
     return (
-      <div className="w-full h-[70vh] bg-gray-800 animate-pulse flex items-center justify-center">
-        <div className="text-gray-400 text-lg">Loading...</div>
+      <div className="w-full h-[70vh] flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-2 border-t-transparent"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-red-500 text-xl">Error: {error}</div>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
+          Error: {error}
         </div>
       </div>
     );

@@ -108,9 +108,9 @@ export default function SearchPage() {
 
     if (searchError) {
       return (
-        <div className="w-full max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-center py-20">
-            <div className="text-red-500 text-xl">Error: {searchError}</div>
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg text-lg">
+            Error: {searchError}
           </div>
         </div>
       );
