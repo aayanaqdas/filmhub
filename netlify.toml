@@ -42,8 +42,13 @@
   status = 200
 
 [[redirects]]
-  from = "/api/details/*"
+  from = "/api/details/*/*"
   to = "/.netlify/functions/details"
+  status = 200
+
+[[redirects]]
+  from = "/api/person/*"
+  to = "/.netlify/functions/person"
   status = 200
 
 [[redirects]]

@@ -10,32 +10,39 @@ exports.handler = async (event, context) => {
     return { statusCode: 405, body: JSON.stringify({ message: "Method not allowed" }) };
   }
 
-  const mediaType = event.path.split("/")[3];
-  const filters = event.queryStringParameters; // Parse other filters like genre, etc.
-  const region = filters.region || "US";
+  const pathParts = event.path.split("/");
+  const mediaType = pathParts[3]; // e.g., "movie", "tv"
+  const queryParams = event.queryStringParameters || {};
 
   if (!mediaType) {
     return { statusCode: 400, body: JSON.stringify({ message: "Media type is required" }) };
   }
 
   try {
-    let url = `${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}&region=${region}`;
-    // Add filters (e.g., genre, year) from query params
-    Object.keys(filters).forEach((key) => {
-      if (key !== "mediaType" && key !== "region") {
-        url += `&${key}=${filters[key]}`;
-      }
+    // Build the URL with all query parameters
+    const params = new URLSearchParams();
+
+    // Add API key and include_adult=false
+    params.append("api_key", apiKey);
+    params.append("include_adult", "false");
+
+    // Add all query parameters from the request
+    Object.keys(queryParams).forEach((key) => {
+      params.append(key, queryParams[key]);
     });
 
-    const cacheKey = `discover_${mediaType}_${JSON.stringify(filters)}`;
+    const url = `${tmdbBaseUrl}/discover/${mediaType}?${params.toString()}`;
+
+    const cacheKey = `discover_${mediaType}_${JSON.stringify(queryParams)}`;
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
       return { statusCode: 200, body: JSON.stringify(cachedData) };
     }
 
     const response = await axios.get(url);
-    cache.set(cacheKey, response.data);
-    return { statusCode: 200, body: JSON.stringify(response.data) };
+    const data = { data: response.data };
+    cache.set(cacheKey, data);
+    return { statusCode: 200, body: JSON.stringify(data) };
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     const status = err.response?.status || 500;

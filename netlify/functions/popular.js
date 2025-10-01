@@ -10,8 +10,9 @@ exports.handler = async (event, context) => {
     return { statusCode: 405, body: JSON.stringify({ message: "Method not allowed" }) };
   }
 
-  const mediaType = event.path.split("/")[3];
-  const region = event.queryStringParameters.region || "US";
+  const pathParts = event.path.split("/");
+  const mediaType = pathParts[3]; // e.g., "movie", "tv", "person"
+  const region = event.queryStringParameters?.region || "US";
 
   if (!mediaType) {
     return { statusCode: 400, body: JSON.stringify({ message: "Media type is required" }) };

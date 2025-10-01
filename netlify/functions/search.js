@@ -10,30 +10,35 @@ exports.handler = async (event, context) => {
     return { statusCode: 405, body: JSON.stringify({ message: "Method not allowed" }) };
   }
 
-  const mediaType = event.path.split("/")[3];
-  const query = event.path.split("/")[4];
-  const page = event.queryStringParameters.page || 1;
-  const region = event.queryStringParameters.region || "US";
+  const pathParts = event.path.split("/");
+  const mediaType = pathParts[3]; // e.g., "multi", "movie", "tv", "person"
+  const query = decodeURIComponent(pathParts[4]); // URL decode the query
+  const page = event.queryStringParameters?.page || 1;
+  const region = event.queryStringParameters?.region || "US";
 
-  if (!query) {
-    return { statusCode: 400, body: JSON.stringify({ message: "Query is required" }) };
+  if (!mediaType || !query) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Media type and query are required" }),
+    };
   }
 
   try {
-    const cacheKey = `search_${query}_${page}_${region}`;
+    const cacheKey = `search_${mediaType}_${query}_${page}_${region}`;
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
       return { statusCode: 200, body: JSON.stringify(cachedData) };
     }
 
     const response = await axios.get(
-      `${tmdbBaseUrl}/search/multi?api_key=${apiKey}&query=${encodeURIComponent(
+      `${tmdbBaseUrl}/search/${mediaType}?api_key=${apiKey}&query=${encodeURIComponent(
         query
       )}&page=${page}&region=${region}`
     );
 
-    cache.set(cacheKey, response.data);
-    return { statusCode: 200, body: JSON.stringify(response.data) };
+    const data = { data: response.data };
+    cache.set(cacheKey, data);
+    return { statusCode: 200, body: JSON.stringify(data) };
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     const status = err.response?.status || 500;

@@ -10,10 +10,11 @@ exports.handler = async (event, context) => {
     return { statusCode: 405, body: JSON.stringify({ message: "Method not allowed" }) };
   }
 
-  const id = event.path.split("/")[3];
+  const pathParts = event.path.split("/");
+  const id = pathParts[3]; // person id
 
   if (!id) {
-    return { statusCode: 400, body: JSON.stringify({ message: "ID is required" }) };
+    return { statusCode: 400, body: JSON.stringify({ message: "Person ID is required" }) };
   }
 
   try {
@@ -28,8 +29,9 @@ exports.handler = async (event, context) => {
       `${tmdbBaseUrl}/person/${id}?api_key=${apiKey}&append_to_response=${appendToResponse}`
     );
 
-    cache.set(cacheKey, response.data);
-    return { statusCode: 200, body: JSON.stringify(response.data) };
+    const data = { data: response.data };
+    cache.set(cacheKey, data);
+    return { statusCode: 200, body: JSON.stringify(data) };
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     const status = err.response?.status || 500;

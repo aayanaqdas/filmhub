@@ -10,8 +10,9 @@ exports.handler = async (event, context) => {
     return { statusCode: 405, body: JSON.stringify({ message: "Method not allowed" }) };
   }
 
-  const mediaType = event.path.split("/")[3];
-  const region = event.queryStringParameters.region || "US";
+  const pathParts = event.path.split("/");
+  const mediaType = pathParts[3]; // e.g., "movie", "tv"
+  const region = event.queryStringParameters?.region || "US";
 
   if (!mediaType) {
     return { statusCode: 400, body: JSON.stringify({ message: "Media type is required" }) };
@@ -24,9 +25,20 @@ exports.handler = async (event, context) => {
       return { statusCode: 200, body: JSON.stringify(cachedData) };
     }
 
-    const response = await axios.get(
-      `${tmdbBaseUrl}/${mediaType}/now_playing?api_key=${apiKey}&region=${region}`
-    );
+    // Only movies have now_playing endpoint, for TV shows use popular/discover instead
+    let endpoint;
+    if (mediaType === "movie") {
+      endpoint = `${tmdbBaseUrl}/movie/now_playing?api_key=${apiKey}&region=${region}`;
+    } else {
+      // For TV shows, use discover with recent air dates
+      const today = new Date().toISOString().split("T")[0];
+      const twoMonthsAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0];
+      endpoint = `${tmdbBaseUrl}/discover/tv?api_key=${apiKey}&sort_by=popularity.desc&first_air_date.gte=${twoMonthsAgo}&first_air_date.lte=${today}&region=${region}&include_adult=false`;
+    }
+
+    const response = await axios.get(endpoint);
 
     const data = { data: response.data };
     cache.set(cacheKey, data);
