@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const serverHost = import.meta.env.VITE_SERVER_HOST;
-const baseUrl = `${serverHost}/api`;
+const baseUrl = `/api`;
 
 const userRegion = localStorage.getItem("region") || "US";
 

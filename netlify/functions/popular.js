@@ -11,7 +11,6 @@ exports.handler = async (event, context) => {
   }
 
   const mediaType = event.path.split("/")[3];
-  const page = event.queryStringParameters.page || 1;
   const region = event.queryStringParameters.region || "US";
 
   if (!mediaType) {
@@ -19,22 +18,23 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const cacheKey = `trending_${mediaType}_${page}_${region}`;
+    const cacheKey = `popular_${mediaType}_${region}`;
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
       return { statusCode: 200, body: JSON.stringify(cachedData) };
     }
 
     const response = await axios.get(
-      `${tmdbBaseUrl}/trending/${mediaType}/day?api_key=${apiKey}&page=${page}&region=${region}`
+      `${tmdbBaseUrl}/discover/${mediaType}?api_key=${apiKey}&sort_by=popularity.desc&region=${region}&include_adult=false`
     );
 
-    cache.set(cacheKey, response.data);
-    return { statusCode: 200, body: JSON.stringify(response.data) };
+    const data = { data: response.data };
+    cache.set(cacheKey, data);
+    return { statusCode: 200, body: JSON.stringify(data) };
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     const status = err.response?.status || 500;
-    const message = err.response?.data?.status_message || "Error fetching trending data";
+    const message = err.response?.data?.status_message || "Error fetching popular data";
     return { statusCode: status, body: JSON.stringify({ message }) };
   }
 };

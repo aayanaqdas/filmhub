@@ -10,7 +10,7 @@ exports.handler = async (event, context) => {
     return { statusCode: 405, body: JSON.stringify({ message: "Method not allowed" }) };
   }
 
-  const id = event.pathParameters.id;
+  const id = event.path.split("/")[3];
 
   if (!id) {
     return { statusCode: 400, body: JSON.stringify({ message: "ID is required" }) };

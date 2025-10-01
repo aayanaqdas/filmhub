@@ -7,6 +7,51 @@
   NODE_VERSION = "18"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/details/*/season/*"
+  to = "/.netlify/functions/season-details"
+  status = 200
+
+[[redirects]]
+  from = "/api/homepage/carousel"
+  to = "/.netlify/functions/homepage-carousel"
+  status = 200
+
+[[redirects]]
+  from = "/api/trending/*"
+  to = "/.netlify/functions/trending"
+  status = 200
+
+[[redirects]]
+  from = "/api/popular/*"
+  to = "/.netlify/functions/popular"
+  status = 200
+
+[[redirects]]
+  from = "/api/top-rated/*"
+  to = "/.netlify/functions/top-rated"
+  status = 200
+
+[[redirects]]
+  from = "/api/now-playing/*"
+  to = "/.netlify/functions/now-playing"
+  status = 200
+
+[[redirects]]
+  from = "/api/latest-trailers"
+  to = "/.netlify/functions/latest-trailers"
+  status = 200
+
+[[redirects]]
+  from = "/api/details/*"
+  to = "/.netlify/functions/details"
+  status = 200
+
+[[redirects]]
+  from = "/api/search/*"
+  to = "/.netlify/functions/search"
+  status = 200
+
+[[redirects]]
+  from = "/api/discover/*"
+  to = "/.netlify/functions/discover"
   status = 200
