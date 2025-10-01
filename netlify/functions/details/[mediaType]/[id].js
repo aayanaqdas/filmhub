@@ -1,7 +1,5 @@
 const axios = require("axios");
-const NodeCache = require("node-cache");
 
-const cache = new NodeCache({ stdTTL: 600 });
 const apiKey = process.env.TMDB_API_KEY;
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 
@@ -20,23 +18,20 @@ exports.handler = async (event, context) => {
 
   try {
     const appendToResponse =
-      "images,videos,credits,reviews,recommendations,similar,release_dates,content_ratings,watch/providers,external_ids";
-    const cacheKey = `details_${mediaType}_${id}_${region}`;
-    const cachedData = cache.get(cacheKey);
-    if (cachedData) {
-      return { statusCode: 200, body: JSON.stringify(cachedData) };
-    }
+      mediaType === "movie"
+        ? "images,release_dates,credits,videos,similar,recommendations,watch/providers,reviews"
+        : "images,content_ratings,credits,videos,similar,recommendations,watch/providers,reviews";
 
-    const response = await axios.get(
-      `${tmdbBaseUrl}/${mediaType}/${id}?api_key=${apiKey}&append_to_response=${appendToResponse}&region=${region}`
-    );
+    const url = `${tmdbBaseUrl}/${mediaType}/${id}?api_key=${apiKey}&include_adult=false&append_to_response=${appendToResponse},${
+      mediaType === "person" ? "combined_credits" : "credits"
+    }&region=${region}`;
 
-    cache.set(cacheKey, response.data);
-    return { statusCode: 200, body: JSON.stringify(response.data) };
+    const response = await axios.get(url);
+    return { statusCode: 200, body: JSON.stringify({ data: response.data }) };
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     const status = err.response?.status || 500;
-    const message = err.response?.data?.status_message || "Error fetching details";
+    const message = err.response?.data?.status_message || "Error fetching media details";
     return { statusCode: status, body: JSON.stringify({ message }) };
   }
 };

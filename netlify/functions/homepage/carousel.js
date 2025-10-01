@@ -45,7 +45,8 @@ exports.handler = async (event, context) => {
     );
 
     cache.set(cacheKey, mediaWithDetails);
-    return { statusCode: 200, body: JSON.stringify(mediaWithDetails) };
+    const data = { data: mediaWithDetails };
+    return { statusCode: 200, body: JSON.stringify(data) };
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
     const status = err.response?.status || 500;
