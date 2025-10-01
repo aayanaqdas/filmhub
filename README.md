@@ -1,298 +1,204 @@
-# 🎬 FilmHub
+# FilmHub
 
-A modern, responsive movie and TV show discovery platform built with React and powered by The Movie Database (TMDB) API. Discover trending content, search for your favorites, and explore detailed information about movies, TV shows, and celebrities.
+A movie and TV show discovery platform that lets you explore trending content, search for your favorite films and shows, and discover new entertainment with detailed information about cast, crew, and where to watch. Built with React and powered by The Movie Database (TMDB) API.
 
-![FilmHub Banner](https://img.shields.io/badge/FilmHub-Movie%20Discovery%20Platform-blue?style=for-the-badge&logo=react)
+## Demo
 
-## ✨ Features
+[![FilmHub Demo](https://img.youtube.com/vi/-N-hww2Pe_0/0.jpg)](https://youtu.be/-N-hww2Pe_0)
 
-### 🏠 **Homepage**
+*Click the image above to watch the demo video*
 
-- **Hero Carousel**: Trending movies and TV shows with backdrop images
-- **Trending Content**: Daily and weekly trending across all media types
-- **Popular Sections**: Movies, TV shows, and people
-- **Latest Trailers**: Filter by popular, streaming, or in theaters
+## Features
 
-### 🔍 **Search & Discovery**
+- Browse trending, popular, and top-rated movies and TV shows
+- Search for movies, TV shows, and people
+- Detailed information pages with cast, crew, and trailers
+- Advanced filtering and discovery options
+- Region-specific content and watch providers
+- Responsive design for all devices
 
-- **Universal Search**: Search across movies, TV shows, and people
-- **Advanced Filtering**: Genre, release date, watch providers, and sorting options
-- **Discover Pages**: Separate discovery for movies and TV shows
-- **Region-based Results**: Content tailored to your location
+## Tech Stack
 
-### 📱 **Media Details**
+- **Frontend**: React, Vite, Tailwind CSS, React Router
+- **Backend**: Netlify Functions or Express.js
+- **API**: The Movie Database (TMDB)
 
-- **Comprehensive Info**: Plot, cast, crew, ratings, and reviews
-- **Media Galleries**: High-quality images and videos
-- **Watch Providers**: Streaming, rental, and purchase options
-- **Similar Content**: Recommendations based on current selection
-- **Season Details**: Episode information for TV shows
+## Installation
 
-### 👤 **People Profiles**
+Choose your setup:
 
-- **Biography**: Detailed information about actors, directors, and crew
-- **Filmography**: Complete list of movies and TV appearances
-- **Photo Galleries**: Professional and promotional photos
+### Netlify Functions
 
-### 🎨 **User Experience**
+1. **Prerequisites**
+   - Node.js 18+
+   - [TMDB API key](https://www.themoviedb.org/settings/api)
+   - Netlify CLI: `npm install -g netlify-cli`
 
-- **Responsive Design**: Optimized for all devices
-- **Region Selection**: Customize content for different countries
-- **Star Ratings**: Visual rating system
-- **Interactive UI**: Smooth animations and transitions
-- **Fast Loading**: Cached API responses and optimized images
-
-## 🛠️ Tech Stack
-
-### **Frontend**
-
-- **React 19** - Modern UI library with latest features
-- **Vite** - Fast build tool and development server
-- **React Router 7** - Client-side routing
-- **Tailwind CSS 4** - Utility-first CSS framework
-- **Embla Carousel** - Smooth carousel components
-- **Axios** - HTTP client for API requests
-
-### **Backend**
-
-- **Netlify Functions** - Serverless API endpoints
-- **Node.js 18** - Runtime environment
-- **Express.js** - Web framework (legacy server)
-- **NodeCache** - In-memory caching for better performance
-- **TMDB API** - Movie and TV data source
-
-### **Deployment**
-
-- **Netlify** - Static hosting and serverless functions
-- **CDN** - Global content delivery
-- **Automatic HTTPS** - SSL certificates
-- **Branch Previews** - Deploy previews for pull requests
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18 or higher
-- TMDB API key ([Get one here](https://www.themoviedb.org/settings/api))
-
-### Installation
-
-1. **Clone the repository**
-
+2. **Setup**
    ```bash
    git clone https://github.com/aayanaqdas/filmhub.git
    cd filmhub
+   cd client && npm install
    ```
 
-2. **Install dependencies**
-
+3. **Environment Variables**
    ```bash
+   # Create .env file in root directory
+   echo "TMDB_API_KEY=your_api_key_here" > .env
+   ```
+
+4. **Run**
+   ```bash
+   # From project root
+   netlify dev
+   ```
+   Access at: `http://localhost:8888`
+
+### Express Server
+
+1. **Prerequisites**
+   - Node.js 18+
+   - [TMDB API key](https://www.themoviedb.org/settings/api)
+
+2. **Setup**
+   ```bash
+   git clone https://github.com/aayanaqdas/filmhub.git
+   cd filmhub
+   
    # Install client dependencies
-   cd client
-   npm install
-
-   # Install server dependencies (if using Express server)
-   cd ../server
-   npm install
+   cd client && npm install
+   
+   # Install server dependencies
+   cd ../server && npm install
    ```
 
-3. **Environment Setup**
-
-   For Netlify deployment, set environment variables in Netlify dashboard:
-
-   ```
-   TMDB_API_KEY=your_tmdb_api_key_here
-   ```
-
-   For local development with Express server, create `.env` file:
-
+3. **Environment Variables**
    ```bash
+   # Create .env file in server directory
    cd server
-   echo "TMDB_API_KEY=your_tmdb_api_key_here" > .env
+   echo "TMDB_API_KEY=your_api_key_here" > .env
    ```
 
-### Development
+4. **Run**
+   ```bash
+   # Terminal 1: Start server
+   cd server && npm run dev
+   
+   # Terminal 2: Start client
+   cd client && npm run dev
+   ```
+   - Frontend: `http://localhost:5173`
+   - API: `http://localhost:8080`
 
-#### **Option 1: Netlify Dev (Recommended)**
-
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Start development server with serverless functions
-cd filmhub
-netlify dev
-```
-
-Access at: `http://localhost:8888`
-
-#### **Option 2: Separate Client & Server**
-
-```bash
-# Terminal 1: Start client
-cd client
-npm run dev
-
-# Terminal 2: Start Express server
-cd server
-npm run dev
-```
-
-- Client: `http://localhost:5173`
-- API: `http://localhost:8080`
-
-### Building for Production
-
-```bash
-cd client
-npm run build
-```
-
-The build output will be in `client/dist/`.
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 filmhub/
-├── client/                    # React frontend
+├── client/                      # React frontend
 │   ├── src/
-│   │   ├── components/       # React components
-│   │   │   ├── CardSections/ # Media cards and galleries
-│   │   │   ├── DiscoverPages/# Filter components
-│   │   │   ├── HeroCarousel/ # Homepage carousel
-│   │   │   └── InfoPage/     # Detail page components
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── pages/           # Page components
-│   │   ├── services/        # API service layer
-│   │   └── assets/          # Images and icons
-│   ├── public/              # Static assets
+│   │   ├── components/          # UI components
+│   │   │   ├── NavBar.jsx       # Main navigation
+│   │   │   ├── Footer.jsx       # Site footer
+│   │   │   ├── RegionSelect.jsx # Region selector
+│   │   │   ├── StarRating.jsx   # Rating display
+│   │   │   ├── NavigationButton.jsx # Navigation utility
+│   │   │   ├── CardSections/    # Card components
+│   │   │   │   ├── Cards.jsx            # Generic card wrappers for multiple media types
+│   │   │   │   ├── CardSection.jsx      # Card section container
+│   │   │   │   ├── ImageCard.jsx        # Cards for images
+│   │   │   │   ├── SearchCard.jsx       # Search result cards
+│   │   │   │   ├── VideoCard.jsx        # Trailer/video cards
+│   │   │   │   ├── ReviewCard.jsx       # Review display cards
+│   │   │   │   └── MediaGallerySection.jsx # Media gallery container
+│   │   │   ├── DiscoverPages/   # Discovery filters
+│   │   │   │   ├── FilterBtns.jsx       # Filter buttons
+│   │   │   │   ├── GenreFilter.jsx      # Genre selection
+│   │   │   │   ├── ProvidersFilter.jsx  # Streaming providers
+│   │   │   │   ├── SortFilter.jsx       # Sort options
+│   │   │   │   └── ReleaseDateFilter.jsx # Date filtering
+│   │   │   ├── HeroCarousel/    # Homepage carousel
+│   │   │   │   ├── HeroCarousel.jsx     # Main carousel component
+│   │   │   │   ├── HeroSlide.jsx        # Individual slide
+│   │   │   │   └── DotsIndicator.jsx    # Slide indicators
+│   │   │   └── InfoPage/        # Detail page components
+│   │   │       ├── HeroSection.jsx      # Media hero section
+│   │   │       ├── PersonInfo.jsx       # Person details
+│   │   │       ├── CollectionPage.jsx   # Movie collections
+│   │   │       ├── SeasonInfoPage.jsx   # TV season details
+│   │   │       ├── EpisodeCards.jsx     # Episode listings
+│   │   │       ├── WatchProviders.jsx   # Streaming availability
+│   │   │       ├── VideoModal.jsx       # Video modal
+│   │   │       ├── ImageModal.jsx       # Image gallery modal
+│   │   │       ├── MediaGalleryFilters.jsx # Gallery filter controls
+│   │   │       └── ReviewsSection.jsx   # Reviews display
+│   │   ├── pages/               # Route components
+│   │   │   ├── HomePage.jsx     # Homepage with trending content
+│   │   │   ├── DiscoverPage.jsx # Advanced filtering page
+│   │   │   ├── InfoPage.jsx     # Media details page
+│   │   │   ├── SearchPage.jsx   # Search results page
+│   │   │   └── NotFoundPage.jsx # 404 page
+│   │   ├── hooks/               # Custom React hooks
+│   │   │   ├── useCarouselData.js      # Homepage carousel data
+│   │   │   ├── useTrendingData.js      # Trending content
+│   │   │   ├── usePopularData.js       # Popular content
+│   │   │   ├── usePopularPeopleData.js # Popular people data
+│   │   │   ├── useTopRatedTvData.js    # Top rated TV shows
+│   │   │   ├── useLatestData.js        # Latest trailers
+│   │   │   ├── useDiscoverPageData.js  # Discovery filters
+│   │   │   ├── useSearchPageData.js    # Search functionality
+│   │   │   └── useInfoPageData.js      # Media details
+│   │   ├── services/            # API service
+│   │   │   └── api.js           # TMDB API calls
+│   │   ├── assets/              # Static assets (icons, images)
+│   │   ├── App.jsx              # Main app component
+│   │   ├── index.jsx            # App entry point
+│   │   ├── index.css            # Global styles
+│   │   ├── countries.js         # Country/region data
+│   │   ├── genres.js            # Genre mappings
+│   │   ├── movieProviders.js    # Movie streaming providers
+│   │   └── tvProviders.js       # TV streaming providers
+│   ├── public/                  # Static public assets
 │   └── package.json
 ├── netlify/
-│   └── functions/           # Serverless API endpoints
-│       ├── details.js       # Media details
-│       ├── discover.js      # Discovery with filters
-│       ├── homepage-carousel.js
-│       ├── latest-trailers.js
-│       ├── now-playing.js
-│       ├── person.js        # People profiles
-│       ├── popular.js       # Popular content
-│       ├── search.js        # Search functionality
-│       ├── season-details.js# TV season details
-│       ├── top-rated.js     # Top rated content
-│       └── trending.js      # Trending content
-├── server/                  # Legacy Express server
-├── netlify.toml            # Netlify configuration
+│   └── functions/               # Serverless functions
+├── server/                      # Express server (alternative)
+├── netlify.toml                # Netlify configuration
 └── README.md
 ```
 
-## 🌐 API Endpoints
+## API Endpoints
 
-### **Serverless Functions** (Production)
+### Content Discovery
+- `/api/homepage/carousel` - Homepage trending mix of movies and TV shows
+- `/api/trending/{mediaType}?time_window={day|week}` - Trending content by time window
+- `/api/popular/{mediaType}` - Popular movies, TV shows, or people
+- `/api/top-rated/{mediaType}` - Top rated content
+- `/api/now-playing/{mediaType}` - Movies currently in theaters
+- `/api/latest-trailers?filter={popular|streaming|theatres}` - Movie trailers
 
-```
-GET /api/homepage/carousel              # Homepage trending mix
-GET /api/trending/{mediaType}           # Trending content
-GET /api/popular/{mediaType}            # Popular content
-GET /api/top-rated/{mediaType}          # Top rated content
-GET /api/now-playing/{mediaType}        # Now playing content
-GET /api/latest-trailers                # Movie trailers
-GET /api/details/{mediaType}/{id}       # Media details
-GET /api/person/{id}                    # Person details
-GET /api/search/{mediaType}/{query}     # Search functionality
-GET /api/discover/{mediaType}           # Discovery with filters
-GET /api/details/tv/{id}/season/{num}   # Season details
-```
+### Media Details
+- `/api/details/{mediaType}/{id}` - Detailed information for movies, TV shows, people and movie collections
+- `/api/details/tv/{id}/season/{seasonNumber}` - TV season details and episodes
 
-### **Query Parameters**
+### Search & Discovery
+- `/api/search/{mediaType}/{query}?page={number}` - Search for movies, TV shows, people, or multi
+- `/api/discover/{mediaType}` - Advanced filtering with genre, provider, date, and sort options
 
-- `region`: Country code (e.g., `US`, `GB`, `IN`)
-- `page`: Page number for pagination
-- `time_window`: `day` or `week` for trending
-- `filter`: `popular`, `streaming`, `theatres` for trailers
+### Supported Media Types
+- `movie` - Movies
+- `tv` - TV Shows  
+- `person` - Actors, directors, crew
+- `collection` - Movies that are part of a collection
+- `multi` - Search across all types
+- `all` - For trending content
 
-## 🎨 Features in Detail
-
-### **Hero Carousel**
-
-- Displays 10 trending movies and TV shows
-- Auto-rotation with manual navigation
-- Backdrop images with gradient overlays
-- Watch provider integration
-- Genre and rating display
-
-### **Advanced Search**
-
-- Multi-type search (movies, TV, people, or all)
-- Real-time suggestions
-- Filter by popularity, rating, and release date
-- Pagination support
-
-### **Discovery System**
-
-- Genre-based filtering
-- Watch provider filtering (Netflix, Prime Video, etc.)
-- Release date ranges
-- Sort by popularity, rating, or release date
-- Vote count thresholds
-
-### **Responsive Design**
-
-- Mobile-first approach
-- Tablet and desktop optimized
-- Touch-friendly interactions
-- Accessible design patterns
-
-## 🚀 Deployment
-
-### **Netlify (Recommended)**
-
-1. **Connect Repository**
-
-   - Link your GitHub repository to Netlify
-   - Auto-deploys on every push to main branch
-
-2. **Environment Variables**
-
-   ```
-   TMDB_API_KEY = your_api_key_here
-   ```
-
-3. **Build Settings** (Auto-configured via `netlify.toml`)
-   ```
-   Build command: cd client && npm install && npm run build
-   Publish directory: client/dist
-   Functions directory: netlify/functions
-   ```
-
-### **Custom Domain**
-
-Update DNS records as provided by Netlify for custom domain setup.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **The Movie Database (TMDB)** for providing the comprehensive movie and TV data API
-- **React Team** for the amazing UI library
-- **Netlify** for seamless deployment and serverless functions
-- **Tailwind CSS** for the utility-first CSS framework
-
-## 📞 Support
-
-If you have any questions or run into issues, please open an issue on GitHub or contact the maintainer.
-
----
-
-**Made with ❤️ by [Aayan Aqdas](https://github.com/aayanaqdas)**
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/aayanaqdas/filmhub)
+### Query Parameters
+- `region` - Content region (default: US)
+- `time_window` - For trending: day or week
+- `page` - For paginated results
+- `filter` - For trailers: popular, streaming, theatres
+- `sort_by` - For discover: popularity.desc, vote_average.desc, etc.
+- `with_genres` - Genre filter (pipe-separated IDs)
+- `with_watch_providers` - Streaming provider filter
+- `vote_count.gte` - Minimum vote count
+- `primary_release_date.gte/lte` - Date range filters
