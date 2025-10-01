@@ -60,3 +60,9 @@
   from = "/api/discover/*"
   to = "/.netlify/functions/discover"
   status = 200
+
+# SPA fallback - this MUST be the last redirect rule
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
